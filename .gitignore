@@ -1,0 +1,22 @@
+# Compiled output
+dist/
+tmp/
+/out-tsc/
+
+# Node
+node_modules/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Misc
+.DS_Store
+
+# Angular cache
+.angular/

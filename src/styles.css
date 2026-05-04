@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: theme('colors.lavender.DEFAULT');
+    --color-accent:  theme('colors.mint.DEFAULT');
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-slate-950 text-slate-100 font-sans antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 60% at 50% -20%, rgba(196,181,253,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 80% 80%, rgba(186,230,253,0.08) 0%, transparent 50%);
+  }
+}
+
+@layer components {
+  /* Aceternity-style glassmorphism card */
+  .glass-card {
+    @apply rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md shadow-xl;
+  }
+
+  /* Glowing progress bar track */
+  .progress-track {
+    @apply h-2 w-full rounded-full bg-white/10 overflow-hidden;
+  }
+
+  /* Pastel tag chip */
+  .tag-chip {
+    @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium;
+  }
+
+  /* Animated gradient border (Aceternity-style) */
+  .gradient-border {
+    position: relative;
+    background: linear-gradient(var(--bg-color, #0f172a), var(--bg-color, #0f172a)) padding-box,
+                linear-gradient(135deg, #c4b5fd, #bae6fd, #bbf7d0) border-box;
+    border: 1px solid transparent;
+    border-radius: theme('borderRadius.2xl');
+  }
+}
+
+@layer utilities {
+  .text-pastel-gradient {
+    @apply bg-gradient-to-r from-lavender-300 via-sky-300 to-mint-300 bg-clip-text text-transparent;
+  }
+
+  .scrollbar-hidden {
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
+}

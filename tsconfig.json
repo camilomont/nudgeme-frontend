@@ -21,7 +21,7 @@
     "useDefineForClassFields": false,
     "lib": ["ES2022", "dom"],
     "baseUrl": "./",
-    "ignoreDeprecations": "5.0",
+    "ignoreDeprecations": "6.0",
     "paths": {
       "@core/*": ["src/app/core/*"],
       "@shared/*": ["src/app/shared/*"],

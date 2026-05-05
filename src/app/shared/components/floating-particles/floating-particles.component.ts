@@ -5,7 +5,6 @@ import {
   OnDestroy,
   ElementRef,
   ViewChild,
-  inject,
 } from '@angular/core';
 import anime from 'animejs';
 
@@ -28,14 +27,7 @@ const PASTEL_COLORS = [
 @Component({
   selector: 'nm-floating-particles',
   standalone: true,
-  template: `
-    <canvas
-      #canvas
-      class="pointer-events-none fixed inset-0 z-0"
-      [width]="width"
-      [height]="height"
-    ></canvas>
-  `,
+  templateUrl: './floating-particles.component.html',
 })
 export class FloatingParticlesComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('canvas', { static: true }) canvasRef!: ElementRef<HTMLCanvasElement>;

@@ -1,0 +1,206 @@
+<div class="auth-shell">
+
+  <!-- ── LEFT: Step content ── -->
+  <div class="form-panel relative">
+    <div #stepContent class="w-full max-w-lg">
+
+      <!-- Logo -->
+      <div class="mb-8 flex items-center gap-2.5">
+        <div
+          class="flex h-9 w-9 items-center justify-center rounded-xl text-white text-sm font-bold"
+          style="background: linear-gradient(135deg, #a855f7, #38bdf8)"
+        >N</div>
+        <span class="text-xl font-bold text-slate-800 tracking-tight">nudgeme</span>
+      </div>
+
+      <!-- Step indicator -->
+      <div class="mb-2 flex items-center gap-1.5">
+        @for (s of STEPS; track s; let i = $index) {
+          <div
+            class="step-pill"
+            [class]="i <= currentIndex()
+              ? 'bg-lavender-400 ' + (i === currentIndex() ? 'w-8' : 'w-4')
+              : 'bg-slate-200 w-4'"
+          ></div>
+        }
+      </div>
+      <p class="mb-6 text-xs text-slate-400 font-medium tracking-wide">
+        {{ currentIndex() + 1 }} de {{ STEPS.length - 1 }}
+      </p>
+
+      <!-- ── WELCOME ── -->
+      @if (step() === 'welcome') {
+        <div>
+          <h1 class="mb-3 text-4xl font-extrabold text-slate-800 leading-tight">
+            Hola,<br>
+            <span class="text-gradient">{{ firstName() || 'viajero' }}</span> 👋
+          </h1>
+          <p class="mb-10 text-slate-500 leading-relaxed">
+            Vamos a personalizar NudgeMe para ti.<br>
+            Solo necesitamos conocer tus gustos y ritmos.
+          </p>
+          <button (click)="next()" class="btn-primary">
+            Comenzar personalización →
+          </button>
+        </div>
+      }
+
+      <!-- ── INTERESTS ── -->
+      @if (step() === 'interests') {
+        <div>
+          <h1 class="mb-2 text-3xl font-extrabold text-slate-800 leading-tight">
+            ¿Qué te<br>apasiona?
+          </h1>
+          <p class="mb-6 text-sm text-slate-400">Elige al menos 3 opciones en total</p>
+
+          <!-- Category tabs -->
+          <div class="mb-5 flex gap-2 overflow-x-auto scrollbar-hidden pb-1">
+            @for (cat of categories; track cat.key) {
+              <button
+                (click)="activeCategory.set(cat.key)"
+                class="flex-shrink-0 rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200"
+                [class]="activeCategory() === cat.key
+                  ? 'bg-lavender-100 text-lavender-700 border border-lavender-200'
+                  : 'bg-slate-100 text-slate-500 hover:bg-slate-200'"
+              >
+                {{ cat.icon }} {{ cat.label }}
+              </button>
+            }
+          </div>
+
+          <!-- Option grid -->
+          <div class="grid grid-cols-3 gap-3 mb-8">
+            @for (opt of currentCategoryOptions(); track opt.label) {
+              <button
+                (click)="toggleInterest(activeCategoryKey(), opt.label)"
+                class="choice-card"
+                [class.selected]="isSelected(activeCategoryKey(), opt.label)"
+              >
+                <span class="text-2xl">{{ opt.icon }}</span>
+                <span class="text-xs font-medium text-slate-700 text-center">{{ opt.label }}</span>
+                @if (isSelected(activeCategoryKey(), opt.label)) {
+                  <span class="absolute top-2 right-2 text-lavender-500 text-xs">✓</span>
+                }
+              </button>
+            }
+          </div>
+
+          <!-- Selection count -->
+          <p class="mb-4 text-xs text-slate-400 text-center">
+            {{ totalSelected() }} seleccionados
+            @if (totalSelected() < 3) {
+              <span class="text-peach-400"> — elige {{ 3 - totalSelected() }} más</span>
+            }
+          </p>
+
+          <div class="flex gap-3">
+            <button (click)="prev()" class="btn-ghost flex-none px-5">← Atrás</button>
+            <button
+              (click)="next()"
+              [disabled]="totalSelected() < 3"
+              class="btn-primary"
+            >
+              Continuar →
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- ── ENERGY ── -->
+      @if (step() === 'energy') {
+        <div>
+          <h1 class="mb-2 text-3xl font-extrabold text-slate-800 leading-tight">
+            ¿Cuándo tienes<br>más energía?
+          </h1>
+          <p class="mb-6 text-sm text-slate-400">Puedes elegir varios momentos del día</p>
+
+          <div class="grid grid-cols-2 gap-3 mb-8">
+            @for (opt of energyOptions; track opt.value) {
+              <button
+                (click)="toggleEnergy(opt.value)"
+                class="choice-card relative text-left"
+                [class.selected]="isEnergySelected(opt.value)"
+              >
+                <span class="text-3xl">{{ opt.emoji }}</span>
+                <div>
+                  <p class="font-semibold text-slate-700 text-sm">{{ opt.label }}</p>
+                  <p class="text-xs text-slate-400">{{ opt.range }}</p>
+                </div>
+                @if (isEnergySelected(opt.value)) {
+                  <span class="absolute top-3 right-3 text-lavender-500 text-sm font-bold">✓</span>
+                }
+              </button>
+            }
+          </div>
+
+          <div class="flex gap-3">
+            <button (click)="prev()" class="btn-ghost flex-none px-5">← Atrás</button>
+            <button
+              (click)="finish()"
+              [disabled]="energyPeaks().length === 0 || isSaving()"
+              class="btn-primary"
+            >
+              {{ isSaving() ? 'Guardando...' : 'Crear mi plan ✨' }}
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- ── DONE ── -->
+      @if (step() === 'done') {
+        <div class="text-center py-8">
+          <div class="text-6xl mb-4">🚀</div>
+          <h1 class="text-3xl font-extrabold text-slate-800 mb-3">¡Listo!</h1>
+          <p class="text-slate-500">Redirigiendo a tu dashboard...</p>
+          <div class="mt-8 flex justify-center">
+            <div class="h-1 w-32 rounded-full bg-slate-100 overflow-hidden">
+              <div #loadingBar class="h-full rounded-full bg-gradient-to-r from-lavender-400 to-sky-300 w-0"></div>
+            </div>
+          </div>
+        </div>
+      }
+
+    </div>
+  </div>
+
+  <!-- ── RIGHT: Illustration panel ── -->
+  <div
+    #illusPanel
+    class="illus-panel"
+    [style.background]="currentIllus().bg"
+  >
+    <!-- Background blobs -->
+    <div class="pointer-events-none absolute inset-0 overflow-hidden">
+      <div class="absolute -top-20 -right-20 h-64 w-64 rounded-full opacity-30"
+        style="background: radial-gradient(circle, rgba(255,255,255,0.8), transparent)"></div>
+      <div class="absolute bottom-10 left-10 h-48 w-48 rounded-full opacity-20"
+        style="background: radial-gradient(circle, rgba(255,255,255,0.6), transparent)"></div>
+    </div>
+
+    <!-- Central emoji character -->
+    <div class="relative z-10 flex flex-col items-center px-10 text-center">
+      <div
+        #illusEmoji
+        class="mb-8 flex h-52 w-52 items-center justify-center rounded-[2.5rem] text-[6.5rem]"
+        style="background: rgba(255,255,255,0.45); backdrop-filter: blur(12px); box-shadow: 0 20px 60px rgba(0,0,0,0.08)"
+      >
+        {{ currentIllus().emoji }}
+      </div>
+      <h3 class="text-2xl font-bold text-slate-700 mb-2">{{ currentIllus().title }}</h3>
+      <p class="text-sm text-slate-500 max-w-xs leading-relaxed">{{ currentIllus().subtitle }}</p>
+
+      <!-- Mini stat cards -->
+      @if (step() === 'welcome' || step() === 'interests') {
+        <div class="mt-8 flex gap-3">
+          <div class="stat-card">
+            <span>🎯</span> <span class="text-xs">IA personalizada</span>
+          </div>
+          <div class="stat-card">
+            <span>⚡</span> <span class="text-xs">Setup en 2 min</span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+</div>

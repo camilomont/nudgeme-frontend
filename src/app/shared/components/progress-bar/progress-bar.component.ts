@@ -4,7 +4,6 @@ import {
   OnChanges,
   ElementRef,
   ViewChild,
-  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import anime from 'animejs';
@@ -22,23 +21,7 @@ const COLOR_MAP: Record<ProgressColor, string> = {
   selector: 'nm-progress-bar',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div class="space-y-1">
-      @if (label) {
-        <div class="flex justify-between text-xs text-slate-400">
-          <span>{{ label }}</span>
-          <span class="font-semibold text-slate-200">{{ value }}%</span>
-        </div>
-      }
-      <div class="progress-track">
-        <div
-          #bar
-          class="h-full rounded-full bg-gradient-to-r {{ colorGradient }} shadow-sm"
-          style="width: 0%"
-        ></div>
-      </div>
-    </div>
-  `,
+  templateUrl: './progress-bar.component.html',
 })
 export class ProgressBarComponent implements OnChanges {
   @Input() value = 0;

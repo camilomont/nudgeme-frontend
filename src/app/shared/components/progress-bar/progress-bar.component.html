@@ -1,0 +1,15 @@
+<div class="space-y-1">
+  @if (label) {
+    <div class="flex justify-between text-xs text-slate-400">
+      <span>{{ label }}</span>
+      <span class="font-semibold text-slate-200">{{ value }}%</span>
+    </div>
+  }
+  <div class="progress-track">
+    <div
+      #bar
+      class="h-full rounded-full bg-gradient-to-r {{ colorGradient }} shadow-sm"
+      style="width: 0%"
+    ></div>
+  </div>
+</div>

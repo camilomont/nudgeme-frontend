@@ -1,0 +1,187 @@
+<div class="min-h-screen flex flex-col lg:flex-row">
+
+  <!-- ── LEFT: Hero Video Panel ── -->
+  <div class="relative hidden lg:flex lg:w-[58%] overflow-hidden">
+
+    <!-- Background video -->
+    <video
+      #heroVideo
+      autoplay
+      muted
+      loop
+      playsinline
+      class="absolute inset-0 h-full w-full object-cover"
+    >
+      <source src="assets/videos/videoP.mp4" type="video/mp4" />
+    </video>
+
+    <!-- Gradient overlay -->
+    <div class="video-overlay absolute inset-0"></div>
+
+    <!-- Ambient blobs -->
+    <div class="blob-top absolute pointer-events-none"></div>
+    <div class="blob-bottom absolute pointer-events-none"></div>
+
+    <!-- Panel content -->
+    <div class="relative z-10 flex flex-col justify-between h-full p-12 w-full">
+
+      <!-- Logo -->
+      <div class="logo-glass flex items-center gap-2 self-start">
+        <div class="h-9 w-9 rounded-full overflow-hidden flex-shrink-0">
+          <img
+            src="assets/images/logotipoNudgeme.png"
+            alt="NudgeMe"
+            width="36"
+            height="36"
+            class="h-full w-full object-cover"
+          />
+        </div>
+        <span class="text-white font-semibold text-base tracking-tight">NudgeMe</span>
+      </div>
+
+      <!-- Hero copy -->
+      <div #heroCopy class="space-y-8">
+        <div>
+          <p class="text-emerald-300 text-xs font-bold tracking-[0.22em] uppercase mb-5">
+            Tu asistente anti-procrastinación
+          </p>
+          <h2 class="text-[3rem] font-extrabold text-white leading-[1.1] mb-5">
+            Deja de<br>procrastinar,<br>
+            <span class="text-emerald-300">empieza<br>a lograr.</span>
+          </h2>
+          <p class="text-white/65 text-sm leading-relaxed max-w-[22rem]">
+            La IA aprende de tus gustos, tu energía y tus hábitos
+            para darte nudges en el momento exacto.
+          </p>
+        </div>
+
+        <!-- Glassmorphism stat cards -->
+        <div class="flex flex-col gap-3 max-w-[22rem]">
+          <div #statCard1 class="stat-glass">
+            <div class="stat-icon-wrap">
+              <lucide-icon
+                [img]="CheckCircle2"
+                [size]="20"
+                [strokeWidth]="1.75"
+                color="white"
+              />
+            </div>
+            <div>
+              <p class="text-white font-semibold text-sm">5 tareas completadas hoy</p>
+              <p class="text-emerald-200/75 text-xs mt-0.5">Sigue así, vas muy bien</p>
+            </div>
+          </div>
+          <div #statCard2 class="stat-glass">
+            <div class="stat-icon-wrap">
+              <lucide-icon
+                [img]="Flame"
+                [size]="20"
+                [strokeWidth]="1.75"
+                color="white"
+              />
+            </div>
+            <div>
+              <p class="text-white font-semibold text-sm">Racha de 7 días activa</p>
+              <p class="text-emerald-200/75 text-xs mt-0.5">Tu mejor semana hasta ahora</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination dots -->
+      <div class="flex gap-2">
+        @for (d of [0,1,2]; track d) {
+          <div
+            class="h-1.5 rounded-full transition-all duration-300"
+            [style]="d === 0 ? 'width:1.5rem;background:white' : 'width:0.5rem;background:rgba(255,255,255,0.3)'"
+          ></div>
+        }
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── RIGHT: Form Panel ── -->
+  <div class="relative flex flex-1 items-center justify-center px-6 py-14 bg-emerald-50 overflow-hidden">
+
+    <!-- Ambient orb (decorative) -->
+    <div #ambientOrb class="ambient-orb pointer-events-none"></div>
+
+    <div #formCard class="relative z-10 w-full max-w-[26rem]">
+
+      <!-- Heading -->
+      <div class="mb-9">
+        <div #heroBadge class="flex items-center gap-2 mb-4">
+          <div class="h-0.5 w-8 rounded-full bg-emerald-500"></div>
+          <span class="text-emerald-600 text-xs font-bold tracking-[0.15em] uppercase">
+            Bienvenido
+          </span>
+        </div>
+        <h1 class="font-extrabold text-slate-800 leading-tight mb-3">
+          <div #headlineLine1 class="text-[2.5rem]">Empieza hoy,</div>
+          <div #headlineLine2 class="text-[2.5rem] green-gradient-text">sin excusas.</div>
+        </h1>
+        <p #heroSubtext class="text-slate-500 text-sm leading-relaxed">
+          Conecta con Google y en 2 minutos tendrás<br>
+          tu primera lista personalizada con IA.
+        </p>
+      </div>
+
+      <!-- Neumorphic card -->
+      <div class="nm-card p-8">
+
+        <!-- Features -->
+        <div class="space-y-4 mb-7">
+          @for (f of features; track f.label) {
+            <div #featureItem class="flex items-center gap-4">
+              <div class="nm-icon-badge">
+                <lucide-icon
+                  [name]="f.iconName"
+                  [size]="17"
+                  [strokeWidth]="1.75"
+                  color="#059669"
+                />
+              </div>
+              <span class="text-sm text-slate-600 leading-snug">{{ f.label }}</span>
+            </div>
+          }
+        </div>
+
+        <!-- Divider -->
+        <div class="flex items-center gap-3 mb-6">
+          <div class="h-px flex-1 bg-slate-200"></div>
+          <span class="text-xs text-slate-400 font-medium">continuar con</span>
+          <div class="h-px flex-1 bg-slate-200"></div>
+        </div>
+
+        <!-- Google OAuth CTA -->
+        <button #googleBtn (click)="login()" class="google-cta">
+          <svg class="h-5 w-5 flex-shrink-0" viewBox="0 0 24 24">
+            <path fill="white" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="rgba(255,255,255,0.85)" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="rgba(255,255,255,0.7)" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="rgba(255,255,255,0.92)" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          <span class="font-semibold flex-1 text-center">Continuar con Google</span>
+          <lucide-icon name="arrow-right" [size]="16" [strokeWidth]="2.5" color="rgba(255,255,255,0.7)" />
+        </button>
+
+        <!-- Legal -->
+        <p class="mt-5 text-center text-xs text-slate-400 leading-relaxed">
+          Al continuar aceptas nuestros
+          <span class="text-emerald-600 cursor-pointer hover:underline font-medium">Términos</span>
+          y
+          <span class="text-emerald-600 cursor-pointer hover:underline font-medium">Privacidad</span>
+        </p>
+
+      </div>
+
+      <!-- Footer note -->
+      <p class="mt-6 text-center text-xs text-slate-400/80 tracking-wide">
+        Impulsado por IA · Construido para la productividad
+      </p>
+
+    </div>
+  </div>
+
+</div>

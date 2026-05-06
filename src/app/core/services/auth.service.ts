@@ -1,7 +1,7 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { tap, catchError, EMPTY } from 'rxjs';
+import { tap, catchError, EMPTY, throwError, map } from 'rxjs';
 import { environment } from '@env/environment';
 
 export interface UserProfile {
@@ -32,22 +32,23 @@ export class AuthService {
   loadProfile() {
     this.isLoading.set(true);
     return this.http
-      .get<UserProfile>(`${environment.apiUrl}/auth/me`)
+      // TransformInterceptor wraps all responses in { data, statusCode, timestamp }
+      .get<{ data: UserProfile }>(`${environment.apiUrl}/auth/me`)
       .pipe(
+        map((res) => res.data),
         tap((profile) => {
           this.user.set(profile);
           this.isLoading.set(false);
         }),
-        catchError(() => {
+        catchError((err) => {
           this.user.set(null);
           this.isLoading.set(false);
-          return EMPTY;
+          return throwError(() => err);
         }),
       );
   }
 
   loginWithGoogle() {
-    // Redirect browser to backend Google OAuth entry point
     window.location.href = `${environment.apiUrl}/auth/google`;
   }
 

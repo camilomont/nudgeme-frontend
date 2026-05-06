@@ -1,0 +1,248 @@
+<div class="min-h-screen flex flex-col lg:flex-row">
+
+  <!-- ── LEFT: Form Panel (58%) ── -->
+  <div class="relative flex flex-1 lg:w-[58%] flex-col px-8 py-10 bg-white overflow-hidden">
+
+    <div class="ambient-orb pointer-events-none"></div>
+
+    <!-- Header: logo + step counter -->
+    <div class="relative z-10 flex items-center justify-between mb-6">
+      <div class="ob-logo-pill">
+        <div class="h-8 w-8 rounded-full overflow-hidden flex-shrink-0">
+          <img src="assets/images/logotipoNudgeme.png" alt="NudgeMe" width="32" height="32" class="h-full w-full object-cover" />
+        </div>
+        <span class="text-slate-700 font-semibold text-sm tracking-tight">NudgeMe</span>
+      </div>
+      @if (step() !== 'done') {
+        <span class="text-xs font-semibold text-slate-400">{{ currentIndex() + 1 }} de {{ STEPS.length - 1 }}</span>
+      }
+    </div>
+
+    <!-- Progress bar -->
+    @if (step() !== 'done') {
+      <div class="relative z-10 flex items-center gap-2 mb-8">
+        @for (s of STEPS.slice(0, -1); track s; let i = $index) {
+          <div class="h-1.5 flex-1 rounded-full transition-all duration-500"
+            [class]="i <= currentIndex() ? 'bg-emerald-500' : 'bg-slate-100'"></div>
+        }
+      </div>
+    }
+
+    <!-- Step content -->
+    <div #stepContent class="relative z-10 flex-1 flex items-center justify-center">
+      <div class="w-full max-w-[28rem]">
+
+        <!-- ── WELCOME ── -->
+        @if (step() === 'welcome') {
+          <div>
+            <span class="text-emerald-600 text-xs font-bold tracking-[0.18em] uppercase mb-3 block">Empecemos</span>
+            <h1 class="mb-3 onb-headline font-extrabold text-slate-800">
+              Deja de procrastinar,<br>
+              <span class="onb-green-text">{{ firstName() || 'campeón' }}.</span>
+            </h1>
+            <p class="mb-7 text-slate-500 text-sm leading-relaxed">
+              Vamos a organizar tu enfoque.<br>
+              2 minutos para crear tu plan personalizado con IA.
+            </p>
+            <div class="nm-card p-7">
+              <div class="space-y-3.5 mb-6">
+                @for (f of welcomeFeatures; track f.label) {
+                  <div class="flex items-center gap-3">
+                    <div class="ob-icon-badge"><img [src]="f.icon" class="w-5 h-5" alt="" draggable="false" /></div>
+                    <span class="text-sm text-slate-600 leading-snug">{{ f.label }}</span>
+                  </div>
+                }
+              </div>
+              <button (click)="next()" class="ob-cta">
+                Comenzar personalización
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- ── INTERESTS ── -->
+        @if (step() === 'interests') {
+          <div>
+            <h1 class="mb-1.5 onb-headline font-extrabold text-slate-800">
+              ¿Qué te <span class="onb-green-text">apasiona?</span>
+            </h1>
+            <p class="mb-5 text-sm text-slate-400">Selecciona una categoría y elige al menos 3 opciones</p>
+
+            <!-- Category carousel -->
+            <div class="mb-2 flex items-center gap-2">
+              <button (click)="carouselPrev()" class="cat-arrow" [disabled]="!canScrollLeft()">
+                <lucide-icon [img]="ChevronLeft" [size]="16"></lucide-icon>
+              </button>
+              <div class="flex gap-2.5 flex-1">
+                @for (cat of visibleCats(); track cat.key) {
+                  <button (click)="selectCategory(cat.key)"
+                    class="cat-card flex-1"
+                    [attr.data-cat]="cat.key"
+                    [class.cat-card-selected]="activeCategory() === cat.key">
+                    <span class="cat-icon-wrap mb-1.5">
+                      <lucide-icon
+                        [img]="cat.lucideIcon"
+                        [size]="28"
+                        [color]="activeCategory() === cat.key ? '#059669' : '#94a3b8'"
+                      ></lucide-icon>
+                    </span>
+                    <span class="text-xs font-semibold text-center leading-tight"
+                      [class]="activeCategory() === cat.key ? 'text-emerald-700' : 'text-slate-500'">
+                      {{ cat.label }}
+                    </span>
+                    @if (activeCategory() === cat.key) {
+                      <span class="cat-check-badge">
+                        <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>
+                        </svg>
+                      </span>
+                    }
+                  </button>
+                }
+              </div>
+              <button (click)="carouselNext()" class="cat-arrow" [disabled]="!canScrollRight()">
+                <lucide-icon [img]="ChevronRight" [size]="16"></lucide-icon>
+              </button>
+            </div>
+
+            <!-- Carousel dots -->
+            <div class="flex justify-center gap-1.5 mb-5">
+              @for (dot of catDots(); track $index) {
+                <div class="h-1.5 rounded-full transition-all duration-300"
+                  [class]="dot ? 'bg-emerald-500 w-5' : 'bg-slate-200 w-1.5'"></div>
+              }
+            </div>
+
+            <!-- Sub-options -->
+            <div class="nm-card p-5" [attr.data-active-cat]="activeCategory()">
+              <div class="grid grid-cols-3 gap-2.5 mb-4">
+                @for (opt of currentCategoryOptions(); track opt.label) {
+                  <button (click)="toggleInterest(activeCategory(), opt.label)"
+                    class="ob-choice" [class.ob-choice-selected]="isSelected(activeCategory(), opt.label)">
+                    <img [src]="opt.icon" class="opt-icon w-8 h-8" alt="" draggable="false" />
+                    <span class="text-xs font-medium text-slate-700 text-center leading-tight">{{ opt.label }}</span>
+                    @if (isSelected(activeCategory(), opt.label)) {
+                      <span class="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center">
+                        <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>
+                        </svg>
+                      </span>
+                    }
+                  </button>
+                }
+              </div>
+              <p class="mb-4 text-xs text-slate-400 text-center">
+                {{ totalSelected() }} seleccionados
+                @if (totalSelected() < 3) {
+                  <span class="text-emerald-500 font-semibold"> — {{ 3 - totalSelected() }} más para continuar</span>
+                } @else {
+                  <span class="text-emerald-500 font-semibold"> ✓ listo</span>
+                }
+              </p>
+              <div class="flex gap-3">
+                <button (click)="prev()" class="ob-ghost">← Atrás</button>
+                <button (click)="next()" [disabled]="totalSelected() < 3" class="ob-cta">Continuar →</button>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- ── ENERGY ── -->
+        @if (step() === 'energy') {
+          <div>
+            <h1 class="mb-1.5 onb-headline font-extrabold text-slate-800">
+              ¿Cuándo tienes<br><span class="onb-green-text">más energía?</span>
+            </h1>
+            <p class="mb-5 text-sm text-slate-400">Puedes elegir varios momentos del día</p>
+
+            <div class="nm-card p-5">
+              <div class="grid grid-cols-2 gap-3 mb-5">
+                @for (opt of energyOptions; track opt.value) {
+                  <button (click)="toggleEnergy(opt.value)"
+                    class="ob-choice ob-choice-energy" [class.ob-choice-selected]="isEnergySelected(opt.value)">
+                    <img [src]="opt.emoji" class="opt-icon w-9 h-9 flex-shrink-0" alt="" draggable="false" />
+                    <div>
+                      <p class="font-semibold text-slate-700 text-sm">{{ opt.label }}</p>
+                      <p class="text-xs text-slate-400">{{ opt.range }}</p>
+                    </div>
+                    @if (isEnergySelected(opt.value)) {
+                      <span class="absolute top-2.5 right-2.5 w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center">
+                        <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>
+                        </svg>
+                      </span>
+                    }
+                  </button>
+                }
+              </div>
+              <div class="flex gap-3">
+                <button (click)="prev()" class="ob-ghost">← Atrás</button>
+                <button (click)="finish()" [disabled]="energyPeaks().length === 0 || isSaving()" class="ob-cta">
+                  {{ isSaving() ? 'Guardando...' : 'Crear mi plan' }}
+                  @if (!isSaving()) {
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
+                    </svg>
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- ── DONE ── -->
+        @if (step() === 'done') {
+          <div>
+            <div class="nm-card p-8 text-center">
+              <div class="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-5">
+                <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>
+                </svg>
+              </div>
+              <h1 class="text-2xl font-extrabold text-slate-800 mb-2 onb-headline">¡Misión completada!</h1>
+              <p class="text-slate-500 text-sm mb-6 leading-relaxed">
+                Tu plan personalizado está siendo preparado.<br>Redirigiendo al dashboard...
+              </p>
+              <div class="h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
+                <div #loadingBar class="h-full rounded-full bg-emerald-500 w-0"></div>
+              </div>
+            </div>
+          </div>
+        }
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT: Illustration Panel (42%) ── -->
+  <div class="relative hidden lg:flex lg:w-[42%] overflow-hidden illus-panel-light">
+
+    <!-- Top gradient fade -->
+    <div class="ob-fade-top absolute top-0 left-0 right-0 z-10 pointer-events-none"></div>
+
+    <!-- Character: top-anchored, centered horizontally -->
+    <div class="absolute inset-0 flex items-start justify-center pointer-events-none">
+      <img
+        #charCard
+        src="assets/images/saludando.png"
+        alt="NudgeMe character"
+        class="ob-char-full"
+      />
+    </div>
+
+    <!-- Copy: absolute at bottom with gradient overlay -->
+    <div class="absolute bottom-0 left-0 right-0 z-20">
+      <div class="ob-copy-overlay px-8 pb-20 pt-16 text-center">
+        <div #illusCopy class="space-y-1.5">
+          <h3 class="text-xl font-extrabold text-emerald-900 onb-headline">{{ currentIllus().title }}</h3>
+          <p class="text-emerald-700/70 text-sm max-w-[17rem] mx-auto leading-relaxed">{{ currentIllus().subtitle }}</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

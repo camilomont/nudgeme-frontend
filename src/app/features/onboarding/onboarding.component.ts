@@ -3,194 +3,278 @@ import {
   inject,
   signal,
   computed,
+  AfterViewInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { AuthService } from '@core/services/auth.service';
 import { ApiService } from '@core/services/api.service';
-import { AnimeEntranceDirective } from '@shared/directives/anime-entrance.directive';
+import anime from 'animejs';
+import {
+  LucideAngularModule,
+  Music,
+  Dumbbell,
+  Gamepad2,
+  Palette,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-angular';
 
 type Step = 'welcome' | 'interests' | 'energy' | 'done';
+const STEPS: Step[] = ['welcome', 'interests', 'energy', 'done'];
 
-const INTEREST_OPTIONS = {
-  music:   ['Pop', 'Rock', 'Jazz', 'Electrónica', 'Reggaeton', 'Clásica', 'Hip-Hop', 'Metal'],
-  sports:  ['Fútbol', 'Natación', 'Running', 'Gym', 'Ciclismo', 'Tenis', 'Yoga', 'Baloncesto'],
-  gaming:  ['RPG', 'Estrategia', 'FPS', 'Aventura', 'Deportes', 'Puzzle', 'Simulación'],
-  hobbies: ['Lectura', 'Cocina', 'Fotografía', 'Dibujo', 'Jardinería', 'Viajes', 'Programar'],
-};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type LucideIcon = any;
+
+interface Category {
+  key: string;
+  label: string;
+  lucideIcon: LucideIcon;
+  options: { label: string; icon: string }[];
+}
+
+const T = (code: string) => `https://cdn.jsdelivr.net/npm/twemoji@latest/2/svg/${code}.svg`;
+
+const INTEREST_CATEGORIES: Category[] = [
+  {
+    key: 'music', label: 'Música', lucideIcon: Music,
+    options: [
+      { label: 'Pop',        icon: T('1f3a4') },
+      { label: 'Rock',       icon: T('1f3b8') },
+      { label: 'Jazz',       icon: T('1f3b7') },
+      { label: 'Electrónica',icon: T('1f3a7') },
+      { label: 'Reggaeton',  icon: T('1f50a') },
+      { label: 'Clásica',    icon: T('1f3bb') },
+    ],
+  },
+  {
+    key: 'sports', label: 'Deporte', lucideIcon: Dumbbell,
+    options: [
+      { label: 'Fútbol',    icon: T('26bd') },
+      { label: 'Running',   icon: T('1f3c3') },
+      { label: 'Gym',       icon: T('1f4aa') },
+      { label: 'Natación',  icon: T('1f3ca') },
+      { label: 'Yoga',      icon: T('1f9d8') },
+      { label: 'Ciclismo',  icon: T('1f6b4') },
+    ],
+  },
+  {
+    key: 'gaming', label: 'Gaming', lucideIcon: Gamepad2,
+    options: [
+      { label: 'RPG',       icon: T('2694') },
+      { label: 'Estrategia',icon: T('265f') },
+      { label: 'FPS',       icon: T('1f3af') },
+      { label: 'Aventura',  icon: T('1f5fa') },
+      { label: 'Deportes',  icon: T('1f3c6') },
+      { label: 'Puzzle',    icon: T('1f9e9') },
+    ],
+  },
+  {
+    key: 'hobbies', label: 'Hobbies', lucideIcon: Palette,
+    options: [
+      { label: 'Lectura',    icon: T('1f4da') },
+      { label: 'Cocina',     icon: T('1f468-200d-1f373') },
+      { label: 'Fotografía', icon: T('1f4f8') },
+      { label: 'Dibujo',     icon: T('270f') },
+      { label: 'Programar',  icon: T('1f4bb') },
+      { label: 'Viajes',     icon: T('2708') },
+    ],
+  },
+];
 
 const ENERGY_OPTIONS = [
-  { value: 'morning',   label: '🌅 Mañana',   desc: '6am – 12pm' },
-  { value: 'afternoon', label: '☀️ Tarde',    desc: '12pm – 6pm' },
-  { value: 'evening',   label: '🌆 Noche',    desc: '6pm – 10pm' },
-  { value: 'night',     label: '🌙 Madrugada', desc: '10pm – 2am' },
+  { value: 'morning',   emoji: T('1f305'), label: 'Mañana',    range: '6am – 12pm' },
+  { value: 'afternoon', emoji: T('2600'),  label: 'Tarde',     range: '12pm – 6pm' },
+  { value: 'evening',   emoji: T('1f306'), label: 'Noche',     range: '6pm – 10pm' },
+  { value: 'night',     emoji: T('1f319'), label: 'Madrugada', range: '10pm – 2am' },
 ];
+
+interface Illus { title: string; subtitle: string; }
+
+const STEP_ILLUS: Record<Step, Illus> = {
+  welcome:   { title: '¡Hola! Estoy listo.',        subtitle: 'En 2 minutos tendrás tu plan personalizado con IA.' },
+  interests: { title: 'Cuéntame sobre ti',           subtitle: 'Cuantos más gustos compartas, mejores nudges recibirás.' },
+  energy:    { title: 'Encuentra tu momento ideal',  subtitle: 'Asignaré tus tareas cuando estés en tu pico de energía.' },
+  done:      { title: '¡Lo logramos!',               subtitle: 'Tu primer plan inteligente está siendo creado ahora mismo.' },
+};
+
+const CAT_ILLUS: Record<string, Illus> = {
+  music:   { title: 'Tu ritmo, tu flow',       subtitle: 'La música impulsa tu productividad y estado de ánimo.' },
+  sports:  { title: 'En movimiento constante', subtitle: 'La actividad física potencia tu enfoque y energía.' },
+  gaming:  { title: 'Juega en la vida real',   subtitle: 'Gana logros reales igual que en tus juegos favoritos.' },
+  hobbies: { title: 'Crea tu mejor versión',   subtitle: 'Tus pasiones son el combustible de tu motivación.' },
+};
 
 @Component({
   selector: 'app-onboarding',
   standalone: true,
-  imports: [CommonModule, FormsModule, AnimeEntranceDirective],
-  template: `
-    <div class="min-h-screen flex items-center justify-center px-4 py-12">
-      <div class="w-full max-w-xl">
-
-        <!-- Step indicator -->
-        <div class="mb-8 flex items-center justify-center gap-2">
-          @for (s of steps; track s; let i = $index) {
-            <div
-              class="h-2 rounded-full transition-all duration-500"
-              [class]="i <= currentStepIndex() ? 'w-8 bg-lavender-400' : 'w-2 bg-white/20'"
-            ></div>
-          }
-        </div>
-
-        <!-- Welcome step -->
-        @if (step() === 'welcome') {
-          <div [animeEntrance]="'floatIn'" class="glass-card p-8 text-center">
-            <div class="mb-6 text-6xl">👋</div>
-            <h2 class="mb-3 text-2xl font-bold text-pastel-gradient font-display">
-              ¡Hola, {{ user()?.name?.split(' ')[0] }}!
-            </h2>
-            <p class="mb-8 text-slate-400">
-              Cuéntame sobre ti para personalizar tus nudges. Solo toma 2 minutos.
-            </p>
-            <button (click)="nextStep()" class="btn-primary">
-              Empezar 🚀
-            </button>
-          </div>
-        }
-
-        <!-- Interests step -->
-        @if (step() === 'interests') {
-          <div [animeEntrance]="'slideUp'" class="glass-card p-8">
-            <h2 class="mb-2 text-xl font-bold text-slate-100">¿Qué te apasiona?</h2>
-            <p class="mb-6 text-sm text-slate-400">Selecciona todo lo que quieras</p>
-
-            @for (category of interestCategories; track category.key) {
-              <div class="mb-5">
-                <h3 class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
-                  {{ category.label }}
-                </h3>
-                <div class="flex flex-wrap gap-2">
-                  @for (opt of category.options; track opt) {
-                    <button
-                      (click)="toggleInterest(category.key, opt)"
-                      class="tag-chip border transition-all duration-200"
-                      [class]="isSelected(category.key, opt)
-                        ? 'border-lavender-400/60 bg-lavender-400/20 text-lavender-200'
-                        : 'border-white/10 bg-white/5 text-slate-400 hover:border-white/20'"
-                    >
-                      {{ opt }}
-                    </button>
-                  }
-                </div>
-              </div>
-            }
-
-            <button (click)="nextStep()" [disabled]="totalSelected() < 3" class="btn-primary mt-4 w-full disabled:opacity-40">
-              Continuar →
-            </button>
-          </div>
-        }
-
-        <!-- Energy step -->
-        @if (step() === 'energy') {
-          <div [animeEntrance]="'slideUp'" class="glass-card p-8">
-            <h2 class="mb-2 text-xl font-bold text-slate-100">¿Cuándo tienes más energía?</h2>
-            <p class="mb-6 text-sm text-slate-400">Puedes elegir varios momentos</p>
-
-            <div class="grid grid-cols-2 gap-3">
-              @for (opt of energyOptions; track opt.value) {
-                <button
-                  (click)="toggleEnergy(opt.value)"
-                  class="rounded-xl border p-4 text-left transition-all duration-200"
-                  [class]="isEnergySelected(opt.value)
-                    ? 'border-mint-300/60 bg-mint-300/10'
-                    : 'border-white/10 bg-white/5 hover:border-white/20'"
-                >
-                  <div class="text-2xl">{{ opt.label.split(' ')[0] }}</div>
-                  <div class="mt-1 text-sm font-medium text-slate-200">{{ opt.label.split(' ').slice(1).join(' ') }}</div>
-                  <div class="text-xs text-slate-500">{{ opt.desc }}</div>
-                </button>
-              }
-            </div>
-
-            <button
-              (click)="finish()"
-              [disabled]="energyPeaks().length === 0 || isSaving()"
-              class="btn-primary mt-6 w-full disabled:opacity-40"
-            >
-              {{ isSaving() ? 'Guardando...' : 'Comenzar mi journey ✨' }}
-            </button>
-          </div>
-        }
-
-        <!-- Done step -->
-        @if (step() === 'done') {
-          <div [animeEntrance]="'scaleIn'" class="glass-card p-8 text-center">
-            <div class="mb-4 text-6xl">🎉</div>
-            <h2 class="mb-3 text-2xl font-bold text-pastel-gradient font-display">¡Todo listo!</h2>
-            <p class="text-slate-400">Redirigiendo a tu dashboard...</p>
-          </div>
-        }
-      </div>
-    </div>
-  `,
-  styles: [`
-    .btn-primary {
-      @apply rounded-xl bg-gradient-to-r from-lavender-400 to-sky-300 px-6 py-3 font-semibold text-slate-900 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-lavender-400/30 active:scale-[0.98];
-    }
-  `],
+  imports: [CommonModule, LucideAngularModule],
+  templateUrl: './onboarding.component.html',
+  styleUrl: './onboarding.component.scss',
 })
-export class OnboardingComponent {
-  private readonly auth = inject(AuthService);
-  private readonly api = inject(ApiService);
+export class OnboardingComponent implements AfterViewInit, OnDestroy {
+  private readonly auth   = inject(AuthService);
+  private readonly api    = inject(ApiService);
   private readonly router = inject(Router);
 
-  readonly user = this.auth.user;
-  readonly steps: Step[] = ['welcome', 'interests', 'energy', 'done'];
-  readonly step = signal<Step>('welcome');
-  readonly currentStepIndex = computed(() => this.steps.indexOf(this.step()));
-  readonly isSaving = signal(false);
+  @ViewChild('stepContent') stepContent!: ElementRef;
+  @ViewChild('charCard')    charCard!: ElementRef;
+  @ViewChild('illusCopy')   illusCopy!: ElementRef;
+  @ViewChild('loadingBar')  loadingBar!: ElementRef;
 
-  readonly selectedInterests = signal<Record<string, string[]>>({
-    music: [], sports: [], gaming: [], hobbies: [],
+  readonly ChevronLeft  = ChevronLeft;
+  readonly ChevronRight = ChevronRight;
+
+  readonly STEPS         = STEPS;
+  readonly step          = signal<Step>('welcome');
+  readonly currentIndex  = computed(() => STEPS.indexOf(this.step()));
+  readonly isSaving      = signal(false);
+  readonly activeCategory = signal<string>('music');
+
+  // Carousel: show 3 of 4 categories at a time
+  readonly carouselStart  = signal(0);
+  readonly visibleCats    = computed(() => INTEREST_CATEGORIES.slice(this.carouselStart(), this.carouselStart() + 3));
+  readonly canScrollLeft  = computed(() => this.carouselStart() > 0);
+  readonly canScrollRight = computed(() => this.carouselStart() + 3 < INTEREST_CATEGORIES.length);
+  readonly catDots        = computed(() => {
+    const positions = INTEREST_CATEGORIES.length - 3 + 1;
+    return Array.from({ length: positions }, (_, i) => i === this.carouselStart());
   });
-  readonly energyPeaks = signal<string[]>([]);
 
-  readonly interestCategories = [
-    { key: 'music', label: 'Música', options: INTEREST_OPTIONS.music },
-    { key: 'sports', label: 'Deporte', options: INTEREST_OPTIONS.sports },
-    { key: 'gaming', label: 'Gaming', options: INTEREST_OPTIONS.gaming },
-    { key: 'hobbies', label: 'Hobbies', options: INTEREST_OPTIONS.hobbies },
-  ];
+  readonly selectedInterests = signal<Record<string, string[]>>({ music: [], sports: [], gaming: [], hobbies: [] });
+  readonly energyPeaks       = signal<string[]>([]);
+
+  readonly categories    = INTEREST_CATEGORIES;
   readonly energyOptions = ENERGY_OPTIONS;
 
-  readonly totalSelected = computed(() =>
-    Object.values(this.selectedInterests()).flat().length,
+  readonly firstName = computed(() => this.auth.user()?.name?.split(' ')[0] ?? '');
+  readonly currentCategoryOptions = computed(() =>
+    INTEREST_CATEGORIES.find(c => c.key === this.activeCategory())?.options ?? []
+  );
+  readonly totalSelected = computed(() => Object.values(this.selectedInterests()).flat().length);
+  readonly currentIllus  = computed<Illus>(() =>
+    this.step() === 'interests'
+      ? (CAT_ILLUS[this.activeCategory()] ?? STEP_ILLUS.interests)
+      : STEP_ILLUS[this.step()]
   );
 
-  nextStep() {
-    const idx = this.currentStepIndex();
-    if (idx < this.steps.length - 1) {
-      this.step.set(this.steps[idx + 1]);
+  readonly welcomeFeatures = [
+    { icon: T('1f9e0'), label: 'Sugerencias IA basadas en tus intereses' },
+    { icon: T('26a1'),  label: 'Tareas adaptadas a tu energía del día' },
+    { icon: T('1f4c8'), label: 'Progreso visual y metas personalizadas' },
+  ];
+
+  ngAfterViewInit() {
+    this.animateCharEntrance();
+    this.animateStepIn();
+  }
+
+  ngOnDestroy() {}
+
+  private animateCharEntrance() {
+    if (this.charCard?.nativeElement) {
+      anime({
+        targets: this.charCard.nativeElement,
+        opacity: [0, 1],
+        translateY: [32, 0],
+        scale: [0.92, 1],
+        duration: 800,
+        delay: 200,
+        easing: 'easeOutBack',
+      });
     }
   }
 
+  private animateStepIn() {
+    anime({
+      targets: this.stepContent?.nativeElement,
+      opacity: [0, 1],
+      translateX: [-24, 0],
+      duration: 560,
+      easing: 'easeOutExpo',
+    });
+    if (this.illusCopy?.nativeElement) {
+      anime({
+        targets: this.illusCopy.nativeElement,
+        opacity: [0, 1],
+        translateY: [16, 0],
+        duration: 480,
+        delay: 160,
+        easing: 'easeOutExpo',
+      });
+    }
+  }
+
+  selectCategory(key: string) {
+    this.activeCategory.set(key);
+    if (this.illusCopy?.nativeElement) {
+      anime({
+        targets: this.illusCopy.nativeElement,
+        opacity: [0.3, 1],
+        translateY: [10, 0],
+        duration: 300,
+        easing: 'easeOutExpo',
+      });
+    }
+  }
+
+  carouselPrev() {
+    if (this.canScrollLeft()) this.carouselStart.update(v => v - 1);
+  }
+
+  carouselNext() {
+    if (this.canScrollRight()) this.carouselStart.update(v => v + 1);
+  }
+
+  next() {
+    this.transitionStep(() => {
+      const idx = this.currentIndex();
+      if (idx < STEPS.length - 1) this.step.set(STEPS[idx + 1]);
+    });
+  }
+
+  prev() {
+    this.transitionStep(() => {
+      const idx = this.currentIndex();
+      if (idx > 0) this.step.set(STEPS[idx - 1]);
+    });
+  }
+
+  private transitionStep(change: () => void) {
+    const tl = anime.timeline({ easing: 'easeInQuad' });
+    tl.add({
+      targets: this.stepContent?.nativeElement,
+      opacity: [1, 0],
+      translateX: [0, -20],
+      duration: 200,
+    });
+    if (this.illusCopy?.nativeElement) {
+      tl.add({
+        targets: this.illusCopy.nativeElement,
+        opacity: [1, 0],
+        translateY: [0, -8],
+        duration: 180,
+      }, 0);
+    }
+    tl.finished.then(() => {
+      change();
+      setTimeout(() => this.animateStepIn(), 40);
+    });
+  }
+
   toggleInterest(category: string, value: string) {
-    this.selectedInterests.update((prev) => {
+    this.selectedInterests.update(prev => {
       const current = prev[category] ?? [];
-      const next = current.includes(value)
-        ? current.filter((v) => v !== value)
-        : [...current, value];
-      return { ...prev, [category]: next };
+      return { ...prev, [category]: current.includes(value) ? current.filter(v => v !== value) : [...current, value] };
     });
   }
 
   toggleEnergy(value: string) {
-    this.energyPeaks.update((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
+    this.energyPeaks.update(prev =>
+      prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
     );
   }
 
@@ -204,18 +288,35 @@ export class OnboardingComponent {
 
   finish() {
     this.isSaving.set(true);
-    this.api
-      .patch('/users/preferences', {
-        preferences: this.selectedInterests(),
-        energyPeaks: this.energyPeaks(),
-        onboardingCompleted: true,
-      })
-      .subscribe({
-        next: () => {
-          this.step.set('done');
-          setTimeout(() => this.router.navigate(['/dashboard']), 1500);
-        },
-        error: () => this.isSaving.set(false),
-      });
+    this.api.patch('/users/preferences', {
+      preferences: this.selectedInterests(),
+      energyPeaks: this.energyPeaks(),
+      onboardingCompleted: true,
+    }).subscribe({
+      next: () => {
+        this.step.set('done');
+        this.auth.loadProfile().subscribe({
+          next: () => this.animateAndNavigate(),
+          error: () => this.animateAndNavigate(),
+        });
+      },
+      error: () => this.isSaving.set(false),
+    });
+  }
+
+  private animateAndNavigate() {
+    setTimeout(() => {
+      if (this.loadingBar?.nativeElement) {
+        anime({
+          targets: this.loadingBar.nativeElement,
+          width: '100%',
+          duration: 1200,
+          easing: 'easeInOutQuart',
+          complete: () => this.router.navigate(['/dashboard']),
+        });
+      } else {
+        this.router.navigate(['/dashboard']);
+      }
+    }, 80);
   }
 }

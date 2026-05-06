@@ -1,0 +1,120 @@
+<div class="mx-auto max-w-3xl px-4 py-8">
+  <div [animeEntrance]="'slideUp'" class="mb-6 flex items-center justify-between">
+    <h1 class="text-2xl font-bold text-pastel-gradient font-display">Mis Tareas</h1>
+    <button (click)="showForm.set(true)" class="btn-lavender">+ Nueva tarea</button>
+  </div>
+
+  <!-- New task form -->
+  @if (showForm()) {
+    <div [animeEntrance]="'scaleIn'" class="glass-card mb-6 p-6">
+      <h3 class="mb-4 font-semibold text-slate-200">Nueva tarea</h3>
+      <div class="space-y-3">
+        <input
+          [(ngModel)]="form.title"
+          placeholder="Título de la tarea"
+          maxlength="200"
+          class="nm-input"
+        />
+        <textarea
+          [(ngModel)]="form.description"
+          placeholder="Descripción (opcional)"
+          rows="2"
+          class="nm-input resize-none"
+        ></textarea>
+        <div class="grid grid-cols-2 gap-3">
+          <select [(ngModel)]="form.type" class="nm-input">
+            <option value="daily">Diaria</option>
+            <option value="weekly">Semanal</option>
+            <option value="monthly">Mensual</option>
+          </select>
+          <select [(ngModel)]="form.priority" class="nm-input">
+            <option value="low">Prioridad baja</option>
+            <option value="medium">Prioridad media</option>
+            <option value="high">Prioridad alta</option>
+          </select>
+        </div>
+        <div class="flex gap-3">
+          <button
+            (click)="createTask()"
+            [disabled]="!form.title || isSaving()"
+            class="btn-lavender flex-1 disabled:opacity-40"
+          >
+            {{ isSaving() ? 'Guardando...' : 'Guardar' }}
+          </button>
+          <button (click)="showForm.set(false)" class="btn-ghost">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Filter tabs -->
+  <div class="mb-4 flex gap-2">
+    @for (f of filters; track f.value) {
+      <button
+        (click)="activeFilter.set(f.value)"
+        class="rounded-full px-4 py-1.5 text-sm transition-all"
+        [class]="activeFilter() === f.value
+          ? 'bg-lavender-400/20 text-lavender-300 font-medium'
+          : 'text-slate-500 hover:text-slate-300'"
+      >
+        {{ f.label }}
+      </button>
+    }
+  </div>
+
+  <!-- Task list -->
+  @if (isLoading()) {
+    <div class="space-y-3">
+      @for (i of [1,2,3,4]; track i) {
+        <div class="h-16 animate-pulse rounded-xl bg-white/5"></div>
+      }
+    </div>
+  } @else {
+    <div class="space-y-2">
+      @for (task of filteredTasks(); track task._id; let i = $index) {
+        <div
+          [animeEntrance]="'slideUp'"
+          [animeDelay]="i * 50"
+          class="glass-card flex items-center gap-3 px-4 py-3"
+        >
+          <button
+            (click)="toggleStatus(task)"
+            class="flex-shrink-0 h-5 w-5 rounded-full border-2 transition-all"
+            [class]="task.status === 'completed'
+              ? 'border-mint-300 bg-mint-300'
+              : 'border-white/30 hover:border-lavender-400'"
+          ></button>
+
+          <div class="min-w-0 flex-1">
+            <p
+              class="text-sm text-slate-200"
+              [class.line-through]="task.status === 'completed'"
+              [class.opacity-40]="task.status === 'completed'"
+            >
+              {{ task.title }}
+            </p>
+            @if (task.description) {
+              <p class="mt-0.5 truncate text-xs text-slate-500">{{ task.description }}</p>
+            }
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span class="tag-chip text-[10px] {{ priorityColor(task.priority) }}">
+              {{ task.priority }}
+            </span>
+            <button
+              (click)="deleteTask(task._id)"
+              class="text-slate-600 transition-all hover:text-red-400"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      } @empty {
+        <div class="py-12 text-center text-slate-500">
+          No hay tareas en esta categoría.
+        </div>
+      }
+    </div>
+  }
+</div>

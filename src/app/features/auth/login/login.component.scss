@@ -1,0 +1,187 @@
+// ── Video panel overlay ──────────────────────────────────────────
+.video-overlay {
+  background: linear-gradient(
+    135deg,
+    rgba(5, 150, 105, 0.84) 0%,
+    rgba(6, 78, 59, 0.92) 100%
+  );
+}
+
+// ── Ambient blobs on video ───────────────────────────────────────
+.blob-top {
+  top: -7rem;
+  left: -7rem;
+  width: 24rem;
+  height: 24rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(52, 211, 153, 0.22), transparent 70%);
+}
+
+.blob-bottom {
+  bottom: -5rem;
+  right: -5rem;
+  width: 20rem;
+  height: 20rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.16), transparent 70%);
+}
+
+// ── Logo pill on dark panel ──────────────────────────────────────
+.logo-glass {
+  padding: 10px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+}
+
+// ── Glassmorphism stat cards ──────────────────────────────────────
+.stat-glass {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 17px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.stat-icon-wrap {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+// ── Ambient orb on form panel ─────────────────────────────────────
+.ambient-orb {
+  position: absolute;
+  top: 5%;
+  right: -8%;
+  width: 22rem;
+  height: 22rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.1), transparent 65%);
+}
+
+// ── Neumorphic form card ──────────────────────────────────────────
+.nm-card {
+  background: #ffffff;
+  border-radius: 28px;
+  box-shadow:
+    18px 18px 38px rgba(16, 185, 129, 0.08),
+    -10px -10px 28px rgba(255, 255, 255, 0.95),
+    0 0 0 1px rgba(16, 185, 129, 0.06);
+}
+
+// ── Feature icon badges (neumorphic) ──────────────────────────────
+.nm-icon-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #f0fdf4;
+  box-shadow:
+    4px 4px 10px rgba(0, 0, 0, 0.06),
+    -4px -4px 10px rgba(255, 255, 255, 1);
+}
+
+// ── Green gradient headline text ──────────────────────────────────
+.green-gradient-text {
+  background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: block;
+}
+
+// ── Google OAuth CTA button ───────────────────────────────────────
+.google-cta {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 15px 22px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  box-shadow:
+    0 4px 18px rgba(16, 185, 129, 0.38),
+    0 1px 4px rgba(0, 0, 0, 0.08);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  // Shimmer sweep
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 55%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.22),
+      transparent
+    );
+    transform: skewX(-18deg);
+    animation: btn-shimmer 3.5s ease-in-out infinite;
+  }
+
+  // Pulse glow ring
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #34d399, #10b981, #059669);
+    opacity: 0;
+    z-index: -1;
+    animation: btn-pulse 2.8s ease-in-out infinite;
+  }
+
+  &:hover {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    box-shadow:
+      0 8px 28px rgba(16, 185, 129, 0.48),
+      0 2px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: scale(0.98) translateY(0);
+    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+  }
+}
+
+@keyframes btn-shimmer {
+  0%   { left: -100%; }
+  55%  { left: 140%; }
+  100% { left: 140%; }
+}
+
+@keyframes btn-pulse {
+  0%, 100% { opacity: 0;    transform: scale(1); }
+  50%       { opacity: 0.35; transform: scale(1.015); }
+}

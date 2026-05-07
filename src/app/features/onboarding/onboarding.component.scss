@@ -310,3 +310,459 @@
   background: #f0fdf4 !important;
   box-shadow: 0 4px 14px rgba(16,185,129,0.18) !important;
 }
+
+// ── Thought bubble card (interests step, right panel) ─────────
+.ob-thought-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(16, 185, 129, 0.25);
+  border-radius: 22px;
+  padding: 16px 22px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(16, 185, 129, 0.18), 0 2px 8px rgba(0,0,0,0.06);
+  max-width: 260px;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid rgba(255, 255, 255, 0.92);
+  }
+}
+
+// ── Interests step: page-level lavender theme ─────────────────
+.ob-interests-page {
+  background: #ECE1F0;
+  overflow-x: hidden;
+}
+
+.ob-interests-page .ob-form-panel {
+  background: transparent !important;
+  padding: 2rem !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.ob-interests-page .ambient-orb {
+  display: none;
+}
+
+.ob-interests-page .ob-form-inner {
+  flex: 0 1 auto !important;
+  background: white;
+  border-radius: 24px;
+  padding: 1.75rem 2rem;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.07), 0 4px 16px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.ob-interests-page .illus-panel-light {
+  background: transparent !important;
+  border-radius: 0 !important;
+  border: none !important;
+  overflow: visible;
+}
+
+.ob-interests-page .ob-char-full {
+  height: calc(96% + 20px);
+  mix-blend-mode: normal;
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0%, black 14%, black 86%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 9%, black 87%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent 0%, black 14%, black 86%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 9%, black 87%, transparent 100%);
+  mask-composite: intersect;
+}
+
+.ob-interests-page .ob-fade-top {
+  background: linear-gradient(to bottom, rgba(236, 226, 240, 0.85) 0%, transparent 100%);
+}
+
+.ob-interests-page .ob-thought-card {
+  max-width: 280px;
+  box-shadow: 0 12px 40px rgba(16, 185, 129, 0.22), 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+// ── Mobile thought bubble (interests step, shown on small screens) ────
+.ob-thought-mobile {
+  background: white;
+  border: 1.5px solid rgba(16, 185, 129, 0.22);
+  border-radius: 18px;
+  padding: 12px 16px;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.14);
+}
+
+// ── Energy step: page-level warm yellow theme ─────────────────
+.ob-energy-page {
+  background: #FEEFD9;
+  overflow-x: hidden;
+}
+
+.ob-energy-page .ob-form-panel {
+  background: transparent !important;
+  padding: 2rem !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.ob-energy-page .ambient-orb { display: none; }
+
+.ob-energy-page .ob-form-inner {
+  flex: 0 1 auto !important;
+  background: white;
+  border-radius: 24px;
+  padding: 1.75rem 2rem;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.07), 0 4px 16px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.ob-energy-page .illus-panel-light {
+  background: transparent !important;
+  border-radius: 0 !important;
+  border: none !important;
+  overflow: visible;
+}
+
+.ob-energy-page .ob-char-full {
+  mix-blend-mode: normal;
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0%, black 14%, black 86%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 9%, black 87%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent 0%, black 14%, black 86%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 9%, black 87%, transparent 100%);
+  mask-composite: intersect;
+}
+
+.ob-energy-page .ob-fade-top {
+  background: linear-gradient(to bottom, rgba(254, 239, 217, 0.85) 0%, transparent 100%);
+}
+
+.ob-energy-page .ob-thought-card {
+  max-width: 280px;
+  box-shadow: 0 12px 40px rgba(16, 185, 129, 0.22), 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+// ── Floating tip card (energy step, header right) ─────────────
+.ob-energy-tip-card {
+  background: white;
+  border: 1.5px solid rgba(16, 185, 129, 0.2);
+  border-radius: 16px;
+  padding: 10px 14px;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.14), 0 2px 6px rgba(0, 0, 0, 0.06);
+  max-width: 210px;
+}
+
+// ── Time-of-day selection cards (energy step) ─────────────────
+.ob-time-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 14px 6px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 20px rgba(255, 200, 0, 0.08);
+  min-height: 110px;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.08);
+  }
+  &:active { transform: scale(0.97); }
+}
+
+.ob-time-card-selected {
+  border: 2px solid #22C55E !important;
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.2) !important;
+}
+
+.ob-time-checkbox {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 2px solid #cbd5e1;
+  background: white;
+  flex-shrink: 0;
+  transition: all 0.18s;
+}
+
+.ob-time-checkbox-checked {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='3' viewBox='0 0 24 24'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m4.5 12.75 6 6 9-13.5'/%3E%3C/svg%3E") !important;
+  background-size: 10px !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+// ── Energy level slider section ───────────────────────────────
+.ob-energy-slider-section {
+  background: #F9FAFB;
+  border-radius: 20px;
+  padding: 16px 18px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+// ── Slider wrapper (reserves space for bolt above track) ──────
+.energy-slider-wrapper {
+  position: relative;
+  padding-top: 38px;
+}
+
+// ── Lightning bolt indicator ──────────────────────────────────
+.energy-bolt {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: left 0.08s ease, color 0.3s ease;
+  pointer-events: none;
+
+  svg {
+    filter: drop-shadow(0 0 6px currentColor);
+    animation: bolt-pulse 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes bolt-pulse {
+  0%, 100% { transform: scale(1);    opacity: 1; }
+  50%       { transform: scale(1.2); opacity: 0.8; }
+}
+
+.energy-slider-input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(to right, #EF4444 0%, #F97316 33%, #FACC15 67%, #22C55E 100%);
+  outline: none;
+  cursor: pointer;
+  display: block;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid #22C55E;
+    box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.18), 0 2px 8px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    transition: transform 0.12s, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  &:active::-webkit-slider-thumb { transform: scale(1.1); }
+
+  &.ec-red::-webkit-slider-thumb {
+    border-color: #EF4444;
+    box-shadow: 0 0 0 5px rgba(239, 68, 68, 0.15), 0 2px 8px rgba(0, 0, 0, 0.12);
+  }
+  &.ec-orange::-webkit-slider-thumb {
+    border-color: #F97316;
+    box-shadow: 0 0 0 5px rgba(249, 115, 22, 0.15), 0 2px 8px rgba(0, 0, 0, 0.12);
+  }
+  &.ec-yellow::-webkit-slider-thumb {
+    border-color: #FACC15;
+    box-shadow: 0 0 0 5px rgba(250, 204, 21, 0.15), 0 2px 8px rgba(0, 0, 0, 0.12);
+  }
+  &.ec-green::-webkit-slider-thumb {
+    border-color: #22C55E;
+    box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.18), 0 2px 8px rgba(0, 0, 0, 0.12);
+  }
+
+  &::-moz-range-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid #22C55E;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18);
+    cursor: pointer;
+  }
+}
+
+// ── Done step: full-screen celebration ───────────────────────
+.ob-done-page {
+  background: linear-gradient(145deg, #f0fdf4 0%, #d1fae5 55%, #a7f3d0 100%);
+  overflow-x: hidden;
+}
+
+.ob-done-page .ob-form-panel {
+  background: transparent !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.ob-done-page .ambient-orb { display: none; }
+
+.ob-done-page .ob-form-inner {
+  flex: 0 1 auto !important;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ob-done-page .ob-illus-panel { display: none !important; }
+
+// ── Done card ─────────────────────────────────────────────────
+.ob-done-card {
+  position: relative;
+  background: white;
+  border-radius: 32px;
+  padding: 48px 36px 40px;
+  text-align: center;
+  box-shadow: 0 32px 80px rgba(16, 185, 129, 0.18), 0 8px 24px rgba(0, 0, 0, 0.06);
+  max-width: 380px;
+  width: 100%;
+  overflow: hidden;
+}
+
+// ── Floating particles ────────────────────────────────────────
+.ob-done-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ob-particle {
+  position: absolute;
+  border-radius: 50%;
+  animation: particle-float linear infinite;
+}
+
+.ob-p1 { width:10px; height:10px; background:#34d399; top:12%; left:8%;  animation-duration:4.2s; animation-delay:0s;    opacity:0.7; }
+.ob-p2 { width: 7px; height: 7px; background:#fbbf24; top:20%; left:82%; animation-duration:3.8s; animation-delay:0.5s;  opacity:0.6; }
+.ob-p3 { width:12px; height:12px; background:#a78bfa; top:55%; left:6%;  animation-duration:5.1s; animation-delay:1.1s;  opacity:0.5; }
+.ob-p4 { width: 6px; height: 6px; background:#f472b6; top:70%; left:88%; animation-duration:4.6s; animation-delay:0.3s;  opacity:0.65; }
+.ob-p5 { width: 9px; height: 9px; background:#10b981; top:80%; left:22%; animation-duration:3.5s; animation-delay:1.8s;  opacity:0.55; }
+.ob-p6 { width: 8px; height: 8px; background:#fb923c; top:30%; left:50%; animation-duration:4.9s; animation-delay:0.9s;  opacity:0.5; }
+.ob-p7 { width:11px; height:11px; background:#60a5fa; top:60%; left:68%; animation-duration:4.0s; animation-delay:2.2s;  opacity:0.6; }
+.ob-p8 { width: 5px; height: 5px; background:#fde68a; top:88%; left:45%; animation-duration:3.3s; animation-delay:1.4s;  opacity:0.7; }
+
+@keyframes particle-float {
+  0%   { transform: translateY(0) rotate(0deg)   scale(1);    opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateY(-220px) rotate(360deg) scale(0.6); opacity: 0; }
+}
+
+// ── Success icon: rings + circle ──────────────────────────────
+.ob-done-icon-wrap {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ob-done-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2.5px solid rgba(16, 185, 129, 0.35);
+  animation: done-ring-pulse 2.4s ease-out infinite;
+}
+
+.ob-done-ring-2 {
+  border-color: rgba(16, 185, 129, 0.2);
+  animation-delay: 0.8s;
+}
+
+@keyframes done-ring-pulse {
+  0%   { transform: scale(1);    opacity: 0.7; }
+  70%  { transform: scale(1.55); opacity: 0;   }
+  100% { transform: scale(1.55); opacity: 0;   }
+}
+
+.ob-done-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 28px rgba(16, 185, 129, 0.45);
+  position: relative;
+  z-index: 1;
+}
+
+// ── Loading bar ───────────────────────────────────────────────
+.ob-done-bar-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  overflow: hidden;
+  position: relative;
+}
+
+.ob-done-bar-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #10b981 0%, #34d399 50%, #10b981 100%);
+  background-size: 200% 100%;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.55);
+  animation: bar-shimmer 1.8s linear infinite;
+}
+
+@keyframes bar-shimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: 0% center; }
+}
+
+// ── Bouncing dots ─────────────────────────────────────────────
+.ob-done-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #10b981;
+    display: inline-block;
+    animation: dot-bounce 1.2s ease-in-out infinite;
+
+    &:nth-child(2) { animation-delay: 0.18s; background: #34d399; }
+    &:nth-child(3) { animation-delay: 0.36s; background: #6ee7b7; }
+  }
+}
+
+@keyframes dot-bounce {
+  0%, 80%, 100% { transform: translateY(0);    opacity: 0.6; }
+  40%            { transform: translateY(-9px); opacity: 1;   }
+}

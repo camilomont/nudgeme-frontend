@@ -1,12 +1,17 @@
-<div class="min-h-screen flex flex-col lg:flex-row">
+<div class="min-h-screen flex flex-col lg:flex-row"
+     [class.ob-interests-page]="step() === 'interests'"
+     [class.ob-energy-page]="step() === 'energy'"
+     [class.ob-done-page]="step() === 'done'">
 
   <!-- ── LEFT: Form Panel (58%) ── -->
-  <div class="relative flex flex-1 lg:w-[58%] flex-col px-8 py-10 bg-white overflow-hidden">
+  <div class="relative flex flex-1 lg:w-[58%] flex-col px-8 py-10 bg-white overflow-hidden ob-form-panel">
 
     <div class="ambient-orb pointer-events-none"></div>
 
-    <!-- Header: logo + step counter -->
-    <div class="relative z-10 flex items-center justify-between mb-6">
+    <div class="ob-form-inner flex-1 flex flex-col">
+
+    <!-- Header: logo + step counter / energy tip -->
+    <div class="relative z-10 flex items-center justify-between mb-6" [class.hidden]="step() === 'done'">
       <div class="ob-logo-pill">
         <div class="h-8 w-8 rounded-full overflow-hidden flex-shrink-0">
           <img src="assets/images/logotipoNudgeme.png" alt="NudgeMe" width="32" height="32" class="h-full w-full object-cover" />
@@ -70,6 +75,14 @@
               ¿Qué te <span class="onb-green-text">apasiona?</span>
             </h1>
             <p class="mb-5 text-sm text-slate-400">Selecciona una categoría y elige al menos 3 opciones</p>
+
+            <!-- Mobile thought bubble (right panel hidden on mobile) -->
+            <div class="block lg:hidden mb-4">
+              <div class="ob-thought-mobile">
+                <h3 class="text-sm font-extrabold text-slate-800 onb-headline mb-1"><span class="text-emerald-500">{{ illusTitleParts().first }}</span>{{ illusTitleParts().middle ? ' ' + illusTitleParts().middle + ' ' : ' ' }}<span class="text-emerald-500">{{ illusTitleParts().last }}</span></h3>
+                <p class="text-emerald-700 text-xs leading-relaxed">{{ currentIllus().subtitle }}</p>
+              </div>
+            </div>
 
             <!-- Category carousel -->
             <div class="mb-2 flex items-center gap-2">
@@ -153,95 +166,203 @@
         <!-- ── ENERGY ── -->
         @if (step() === 'energy') {
           <div>
-            <h1 class="mb-1.5 onb-headline font-extrabold text-slate-800">
-              ¿Cuándo tienes<br><span class="onb-green-text">más energía?</span>
+            <h1 class="mb-1 onb-headline font-extrabold text-slate-800 text-center">
+              ¿Cuándo tienes <span class="onb-green-text">más energía?</span>
             </h1>
-            <p class="mb-5 text-sm text-slate-400">Puedes elegir varios momentos del día</p>
+            <p class="mb-5 text-sm text-slate-400 text-center">Puedes elegir varios momentos del día</p>
 
-            <div class="nm-card p-5">
-              <div class="grid grid-cols-2 gap-3 mb-5">
-                @for (opt of energyOptions; track opt.value) {
-                  <button (click)="toggleEnergy(opt.value)"
-                    class="ob-choice ob-choice-energy" [class.ob-choice-selected]="isEnergySelected(opt.value)">
-                    <img [src]="opt.emoji" class="opt-icon w-9 h-9 flex-shrink-0" alt="" draggable="false" />
-                    <div>
-                      <p class="font-semibold text-slate-700 text-sm">{{ opt.label }}</p>
-                      <p class="text-xs text-slate-400">{{ opt.range }}</p>
-                    </div>
-                    @if (isEnergySelected(opt.value)) {
-                      <span class="absolute top-2.5 right-2.5 w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center">
-                        <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>
-                        </svg>
-                      </span>
-                    }
-                  </button>
+            <!-- Mobile thought bubble (right panel hidden on mobile) -->
+            <div class="block lg:hidden mb-4">
+              <div class="ob-thought-mobile" style="text-align:left">
+                <div class="flex items-start gap-2">
+                  <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="#22C55E" viewBox="0 0 24 24">
+                    <path d="M13 2 4.09 12.96A.5.5 0 004.5 14H11l-1 8 8.91-10.96A.5.5 0 0018.5 10H12l1-8z"/>
+                  </svg>
+                  <div>
+                    <h3 class="text-sm font-extrabold text-slate-800 onb-headline mb-0.5 leading-tight">
+                      Encuentra tu <span class="text-emerald-500">momento</span> ideal
+                    </h3>
+                    <p class="text-emerald-700 text-xs leading-relaxed">Asignaré tus tareas cuando estés en tu pico de energía.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4-column time-of-day cards -->
+            <div class="grid grid-cols-4 gap-2.5 mb-5">
+              @for (opt of energyOptions; track opt.value) {
+                <button (click)="toggleEnergy(opt.value)"
+                  class="ob-time-card"
+                  [style.background]="opt.bgColor"
+                  [style.border-color]="isEnergySelected(opt.value) ? opt.selectedColor : null"
+                  [style.border-width]="isEnergySelected(opt.value) ? '2px' : null"
+                  [style.box-shadow]="isEnergySelected(opt.value) ? '0 4px 18px ' + opt.selectedColor + '40' : null">
+                  <lucide-icon [img]="opt.lucideIcon" [size]="36" [color]="opt.iconColor" class="mb-1.5 flex-shrink-0"></lucide-icon>
+                  <p class="font-bold text-slate-700 text-xs leading-tight">{{ opt.label }}</p>
+                  <p class="text-[10px] text-slate-400 mt-0.5">{{ opt.range }}</p>
+                  <div class="mt-2 ob-time-checkbox"
+                    [style.background-color]="isEnergySelected(opt.value) ? opt.selectedColor : null"
+                    [style.border-color]="isEnergySelected(opt.value) ? opt.selectedColor : null"
+                    [class.ob-time-checkbox-checked]="isEnergySelected(opt.value)"></div>
+                </button>
+              }
+            </div>
+
+            <!-- Energy level slider -->
+            <div class="ob-energy-slider-section mb-5">
+              <p class="font-bold text-slate-700 text-sm mb-0.5">¿Cómo te sientes ahora?</p>
+              <p class="text-xs text-slate-400 mb-3">Muéstrame tu nivel de energía actual</p>
+              <div class="energy-slider-wrapper">
+                <div class="energy-bolt" [style.left]="boltLeft()" [style.color]="energyColor()">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M13 2 4.09 12.96A.5.5 0 004.5 14H11l-1 8 8.91-10.96A.5.5 0 0018.5 10H12l1-8z"/>
+                  </svg>
+                </div>
+                <input type="range" min="0" max="100"
+                  [value]="energyLevel()"
+                  (input)="setEnergyLevel($event)"
+                  class="energy-slider-input"
+                  [class.ec-red]="energyLevel() < 25"
+                  [class.ec-orange]="energyLevel() >= 25 && energyLevel() < 50"
+                  [class.ec-yellow]="energyLevel() >= 50 && energyLevel() < 75"
+                  [class.ec-green]="energyLevel() >= 75" />
+              </div>
+              <div class="flex justify-between mt-3">
+                @for (e of energyEmojis; track $index; let i = $index) {
+                  <div class="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300"
+                       style="outline-offset: 1px"
+                       [style.background]="activeEmojiIndex() === i ? energyColor() + '20' : 'transparent'"
+                       [style.outline]="activeEmojiIndex() === i ? '2px solid ' + energyColor() : 'none'">
+                    <img [src]="e.icon" class="w-5 h-5" alt="" draggable="false" />
+                  </div>
                 }
               </div>
-              <div class="flex gap-3">
-                <button (click)="prev()" class="ob-ghost">← Atrás</button>
-                <button (click)="finish()" [disabled]="energyPeaks().length === 0 || isSaving()" class="ob-cta">
-                  {{ isSaving() ? 'Guardando...' : 'Crear mi plan' }}
-                  @if (!isSaving()) {
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
-                    </svg>
-                  }
-                </button>
-              </div>
+            </div>
+
+            <div class="flex gap-3">
+              <button (click)="prev()" class="ob-ghost">← Atrás</button>
+              <button (click)="finish()" [disabled]="energyPeaks().length === 0 || isSaving()" class="ob-cta">
+                {{ isSaving() ? 'Guardando...' : 'Crear mi plan' }}
+                @if (!isSaving()) {
+                  <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
+                  </svg>
+                }
+              </button>
             </div>
           </div>
         }
 
         <!-- ── DONE ── -->
         @if (step() === 'done') {
-          <div>
-            <div class="nm-card p-8 text-center">
-              <div class="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-5">
-                <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <div class="ob-done-card">
+            <!-- Floating particles -->
+            <div class="ob-done-particles" aria-hidden="true">
+              <span class="ob-particle ob-p1"></span>
+              <span class="ob-particle ob-p2"></span>
+              <span class="ob-particle ob-p3"></span>
+              <span class="ob-particle ob-p4"></span>
+              <span class="ob-particle ob-p5"></span>
+              <span class="ob-particle ob-p6"></span>
+              <span class="ob-particle ob-p7"></span>
+              <span class="ob-particle ob-p8"></span>
+            </div>
+
+            <!-- Animated success icon -->
+            <div class="ob-done-icon-wrap">
+              <div class="ob-done-ring ob-done-ring-1"></div>
+              <div class="ob-done-ring ob-done-ring-2"></div>
+              <div class="ob-done-circle">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="2.8" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>
                 </svg>
               </div>
-              <h1 class="text-2xl font-extrabold text-slate-800 mb-2 onb-headline">¡Misión completada!</h1>
-              <p class="text-slate-500 text-sm mb-6 leading-relaxed">
-                Tu plan personalizado está siendo preparado.<br>Redirigiendo al dashboard...
-              </p>
-              <div class="h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
-                <div #loadingBar class="h-full rounded-full bg-emerald-500 w-0"></div>
-              </div>
+            </div>
+
+            <!-- Titles -->
+            <h1 class="text-2xl font-extrabold text-slate-800 mb-1 onb-headline">¡Misión completada!</h1>
+            <h2 class="text-lg font-extrabold onb-green-text onb-headline mb-2">{{ currentIllus().title }}</h2>
+            <p class="text-slate-400 text-sm leading-relaxed max-w-[260px] mx-auto mb-6">{{ currentIllus().subtitle }}</p>
+
+            <!-- Loading bar -->
+            <div class="ob-done-bar-track">
+              <div #loadingBar class="ob-done-bar-fill"></div>
+            </div>
+            <p class="text-xs text-slate-400 mt-2 mb-3">Redirigiendo al dashboard...</p>
+
+            <!-- Bouncing dots -->
+            <div class="ob-done-dots">
+              <span></span><span></span><span></span>
             </div>
           </div>
         }
 
       </div>
     </div>
+    </div><!-- /ob-form-inner -->
   </div>
 
   <!-- ── RIGHT: Illustration Panel (42%) ── -->
-  <div class="relative hidden lg:flex lg:w-[42%] overflow-hidden illus-panel-light">
+  <div class="relative hidden lg:flex lg:w-[42%] overflow-hidden illus-panel-light ob-illus-panel">
 
     <!-- Top gradient fade -->
     <div class="ob-fade-top absolute top-0 left-0 right-0 z-10 pointer-events-none"></div>
 
-    <!-- Character: top-anchored, centered horizontally -->
+    <!-- saludando: welcome / done -->
     <div class="absolute inset-0 flex items-start justify-center pointer-events-none">
-      <img
-        #charCard
-        src="assets/images/saludando.png"
-        alt="NudgeMe character"
-        class="ob-char-full"
-      />
+      <img #charSaludando src="assets/images/saludando.png" alt="NudgeMe character" class="ob-char-full" style="opacity:1" />
     </div>
 
-    <!-- Copy: absolute at bottom with gradient overlay -->
-    <div class="absolute bottom-0 left-0 right-0 z-20">
-      <div class="ob-copy-overlay px-8 pb-20 pt-16 text-center">
-        <div #illusCopy class="space-y-1.5">
-          <h3 class="text-xl font-extrabold text-emerald-900 onb-headline">{{ currentIllus().title }}</h3>
-          <p class="text-emerald-700/70 text-sm max-w-[17rem] mx-auto leading-relaxed">{{ currentIllus().subtitle }}</p>
+    <!-- pensando: interests step -->
+    <div class="absolute inset-0 flex items-start justify-center pointer-events-none">
+      <img #charPensando src="assets/images/pensando.png" alt="NudgeMe character" class="ob-char-full" style="opacity:0" />
+    </div>
+
+    <!-- energia: energy step -->
+    <div class="absolute inset-0 flex items-start justify-center pointer-events-none">
+      <img #charEnergia src="assets/images/energia.png" alt="NudgeMe character" class="ob-char-full" style="opacity:0" />
+    </div>
+
+    <!-- Thought bubble: interests step only -->
+    @if (step() === 'interests') {
+      <div #thoughtBubble class="absolute z-30" style="top:7%; left:-6rem; right:6%; display:flex; justify-content:flex-start; padding-left:0">
+        <div class="ob-thought-card">
+          <h3 class="text-base font-extrabold text-slate-800 onb-headline mb-1"><span class="text-emerald-500">{{ illusTitleParts().first }}</span>{{ illusTitleParts().middle ? ' ' + illusTitleParts().middle + ' ' : ' ' }}<span class="text-emerald-500">{{ illusTitleParts().last }}</span></h3>
+          <p class="text-emerald-700 text-xs leading-relaxed text-center max-w-[200px] mx-auto">{{ currentIllus().subtitle }}</p>
         </div>
       </div>
-    </div>
+    }
+
+    <!-- Thought bubble: energy step -->
+    @if (step() === 'energy') {
+      <div #energyBubble class="absolute z-30" style="top:7%; left:-6rem; right:6%; display:flex; justify-content:flex-start; padding-left:0">
+        <div class="ob-thought-card" style="text-align:left">
+          <div class="flex items-start gap-2.5">
+            <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="#22C55E" viewBox="0 0 24 24">
+              <path d="M13 2 4.09 12.96A.5.5 0 004.5 14H11l-1 8 8.91-10.96A.5.5 0 0018.5 10H12l1-8z"/>
+            </svg>
+            <div>
+              <h3 class="text-[9px] font-extrabold text-slate-800 onb-headline mb-1 leading-tight">
+                Encuentra tu <span class="text-emerald-500">momento</span> ideal
+              </h3>
+              <p class="text-emerald-700 text-xs leading-relaxed">Asignaré tus tareas cuando estés en tu pico de energía.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Copy overlay: welcome and done only -->
+    @if (step() === 'welcome') {
+      <div class="absolute bottom-0 left-0 right-0 z-20">
+        <div class="ob-copy-overlay px-8 pb-20 pt-16 text-center">
+          <div #illusCopy class="space-y-1.5">
+            <h3 class="text-xl font-extrabold text-emerald-900 onb-headline">{{ currentIllus().title }}</h3>
+            <p class="text-emerald-700/70 text-sm max-w-[17rem] mx-auto leading-relaxed">{{ currentIllus().subtitle }}</p>
+          </div>
+        </div>
+      </div>
+    }
 
   </div>
 

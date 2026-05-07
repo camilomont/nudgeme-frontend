@@ -21,6 +21,10 @@ import {
   Palette,
   ChevronLeft,
   ChevronRight,
+  Sun,
+  Sunset,
+  Moon,
+  MoonStar,
 } from 'lucide-angular';
 
 type Step = 'welcome' | 'interests' | 'energy' | 'done';
@@ -86,10 +90,10 @@ const INTEREST_CATEGORIES: Category[] = [
 ];
 
 const ENERGY_OPTIONS = [
-  { value: 'morning',   emoji: T('1f305'), label: 'Mañana',    range: '6am – 12pm' },
-  { value: 'afternoon', emoji: T('2600'),  label: 'Tarde',     range: '12pm – 6pm' },
-  { value: 'evening',   emoji: T('1f306'), label: 'Noche',     range: '6pm – 10pm' },
-  { value: 'night',     emoji: T('1f319'), label: 'Madrugada', range: '10pm – 2am' },
+  { value: 'morning',   lucideIcon: Sun,      iconColor: '#FBBF24', selectedColor: '#D97706', label: 'Mañana',    range: '6am – 12pm',  bgColor: '#FFF6DB' },
+  { value: 'afternoon', lucideIcon: Sunset,   iconColor: '#FB923C', selectedColor: '#EA580C', label: 'Tarde',     range: '12pm – 6pm',  bgColor: '#FFEFD2' },
+  { value: 'evening',   lucideIcon: MoonStar, iconColor: '#818CF8', selectedColor: '#6366F1', label: 'Noche',     range: '6pm – 10pm',  bgColor: '#ECEBFF' },
+  { value: 'night',     lucideIcon: Moon,     iconColor: '#94A3B8', selectedColor: '#64748B', label: 'Madrugada', range: '10pm – 2am',  bgColor: '#EEF2F7' },
 ];
 
 interface Illus { title: string; subtitle: string; }
@@ -120,10 +124,14 @@ export class OnboardingComponent implements AfterViewInit, OnDestroy {
   private readonly api    = inject(ApiService);
   private readonly router = inject(Router);
 
-  @ViewChild('stepContent') stepContent!: ElementRef;
-  @ViewChild('charCard')    charCard!: ElementRef;
-  @ViewChild('illusCopy')   illusCopy!: ElementRef;
-  @ViewChild('loadingBar')  loadingBar!: ElementRef;
+  @ViewChild('stepContent')   stepContent!: ElementRef;
+  @ViewChild('charSaludando') charSaludando!: ElementRef;
+  @ViewChild('charPensando')  charPensando!: ElementRef;
+  @ViewChild('charEnergia')   charEnergia!: ElementRef;
+  @ViewChild('illusCopy')     illusCopy!: ElementRef;
+  @ViewChild('loadingBar')    loadingBar!: ElementRef;
+  @ViewChild('thoughtBubble') thoughtBubble!: ElementRef;
+  @ViewChild('energyBubble')  energyBubble!: ElementRef;
 
   readonly ChevronLeft  = ChevronLeft;
   readonly ChevronRight = ChevronRight;
@@ -146,6 +154,36 @@ export class OnboardingComponent implements AfterViewInit, OnDestroy {
 
   readonly selectedInterests = signal<Record<string, string[]>>({ music: [], sports: [], gaming: [], hobbies: [] });
   readonly energyPeaks       = signal<string[]>([]);
+  readonly energyLevel       = signal(80);
+
+  readonly energyEmojis = [
+    { icon: T('1f621') },
+    { icon: T('1f614') },
+    { icon: T('1f610') },
+    { icon: T('1f60a') },
+    { icon: T('1f604') },
+  ];
+  readonly activeEmojiIndex = computed(() => {
+    const v = this.energyLevel();
+    if (v < 12.5) return 0;
+    if (v < 37.5) return 1;
+    if (v < 62.5) return 2;
+    if (v < 87.5) return 3;
+    return 4;
+  });
+
+  readonly energyColor = computed(() => {
+    const v = this.energyLevel();
+    if (v < 25) return '#EF4444';
+    if (v < 50) return '#F97316';
+    if (v < 75) return '#FACC15';
+    return '#22C55E';
+  });
+
+  readonly boltLeft = computed(() => {
+    const v = this.energyLevel();
+    return `calc(${v}% + ${(50 - v) * 0.4}px)`;
+  });
 
   readonly categories    = INTEREST_CATEGORIES;
   readonly energyOptions = ENERGY_OPTIONS;
@@ -161,6 +199,12 @@ export class OnboardingComponent implements AfterViewInit, OnDestroy {
       : STEP_ILLUS[this.step()]
   );
 
+  readonly illusTitleParts = computed(() => {
+    const words = this.currentIllus().title.split(' ');
+    if (words.length <= 1) return { first: words[0] ?? '', middle: '', last: '' };
+    return { first: words[0], middle: words.slice(1, -1).join(' '), last: words[words.length - 1] };
+  });
+
   readonly welcomeFeatures = [
     { icon: T('1f9e0'), label: 'Sugerencias IA basadas en tus intereses' },
     { icon: T('26a1'),  label: 'Tareas adaptadas a tu energía del día' },
@@ -175,9 +219,9 @@ export class OnboardingComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy() {}
 
   private animateCharEntrance() {
-    if (this.charCard?.nativeElement) {
+    if (this.charSaludando?.nativeElement) {
       anime({
-        targets: this.charCard.nativeElement,
+        targets: this.charSaludando.nativeElement,
         opacity: [0, 1],
         translateY: [32, 0],
         scale: [0.92, 1],
@@ -188,21 +232,44 @@ export class OnboardingComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  private charNameForStep(s: Step): 'saludando' | 'pensando' | 'energia' {
+    if (s === 'interests') return 'pensando';
+    if (s === 'energy')    return 'energia';
+    return 'saludando';
+  }
+
+  private crossfadeToChar(name: 'saludando' | 'pensando' | 'energia') {
+    const map: Record<string, ElementRef | undefined> = {
+      saludando: this.charSaludando,
+      pensando:  this.charPensando,
+      energia:   this.charEnergia,
+    };
+    Object.entries(map).forEach(([key, ref]) => {
+      if (!ref?.nativeElement) return;
+      anime({ targets: ref.nativeElement, opacity: key === name ? 1 : 0, duration: 280, easing: 'easeInOutQuart' });
+    });
+  }
+
   private animateStepIn() {
     anime({
       targets: this.stepContent?.nativeElement,
       opacity: [0, 1],
       translateX: [-24, 0],
-      duration: 560,
+      duration: 320,
       easing: 'easeOutExpo',
     });
-    if (this.illusCopy?.nativeElement) {
+    const copyEl = this.step() === 'interests'
+      ? this.thoughtBubble?.nativeElement
+      : this.step() === 'energy'
+      ? this.energyBubble?.nativeElement
+      : this.illusCopy?.nativeElement;
+    if (copyEl) {
       anime({
-        targets: this.illusCopy.nativeElement,
+        targets: copyEl,
         opacity: [0, 1],
         translateY: [16, 0],
-        duration: 480,
-        delay: 160,
+        duration: 280,
+        delay: 80,
         easing: 'easeOutExpo',
       });
     }
@@ -210,9 +277,12 @@ export class OnboardingComponent implements AfterViewInit, OnDestroy {
 
   selectCategory(key: string) {
     this.activeCategory.set(key);
-    if (this.illusCopy?.nativeElement) {
+    const copyEl = this.step() === 'interests'
+      ? this.thoughtBubble?.nativeElement
+      : this.illusCopy?.nativeElement;
+    if (copyEl) {
       anime({
-        targets: this.illusCopy.nativeElement,
+        targets: copyEl,
         opacity: [0.3, 1],
         translateY: [10, 0],
         duration: 300,
@@ -244,6 +314,7 @@ export class OnboardingComponent implements AfterViewInit, OnDestroy {
   }
 
   private transitionStep(change: () => void) {
+    const prevStep = this.step();
     const tl = anime.timeline({ easing: 'easeInQuad' });
     tl.add({
       targets: this.stepContent?.nativeElement,
@@ -251,16 +322,20 @@ export class OnboardingComponent implements AfterViewInit, OnDestroy {
       translateX: [0, -20],
       duration: 200,
     });
-    if (this.illusCopy?.nativeElement) {
-      tl.add({
-        targets: this.illusCopy.nativeElement,
-        opacity: [1, 0],
-        translateY: [0, -8],
-        duration: 180,
-      }, 0);
+    const copyEl = prevStep === 'interests'
+      ? this.thoughtBubble?.nativeElement
+      : prevStep === 'energy'
+      ? this.energyBubble?.nativeElement
+      : this.illusCopy?.nativeElement;
+    if (copyEl) {
+      tl.add({ targets: copyEl, opacity: [1, 0], translateY: [0, -8], duration: 180 }, 0);
     }
     tl.finished.then(() => {
       change();
+      const nextStep = this.step();
+      const prevChar = this.charNameForStep(prevStep);
+      const nextChar = this.charNameForStep(nextStep);
+      if (prevChar !== nextChar) this.crossfadeToChar(nextChar);
       setTimeout(() => this.animateStepIn(), 40);
     });
   }
@@ -278,6 +353,10 @@ export class OnboardingComponent implements AfterViewInit, OnDestroy {
     );
   }
 
+  setEnergyLevel(e: Event) {
+    this.energyLevel.set(+(e.target as HTMLInputElement).value);
+  }
+
   isSelected(category: string, value: string): boolean {
     return this.selectedInterests()[category]?.includes(value) ?? false;
   }
@@ -291,6 +370,7 @@ export class OnboardingComponent implements AfterViewInit, OnDestroy {
     this.api.patch('/users/preferences', {
       preferences: this.selectedInterests(),
       energyPeaks: this.energyPeaks(),
+      energyLevel: this.energyLevel(),
       onboardingCompleted: true,
     }).subscribe({
       next: () => {
@@ -310,7 +390,7 @@ export class OnboardingComponent implements AfterViewInit, OnDestroy {
         anime({
           targets: this.loadingBar.nativeElement,
           width: '100%',
-          duration: 1200,
+          duration: 3000,
           easing: 'easeInOutQuart',
           complete: () => this.router.navigate(['/dashboard']),
         });

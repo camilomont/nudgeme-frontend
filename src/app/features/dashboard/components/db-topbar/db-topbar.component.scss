@@ -1,0 +1,60 @@
+.topbar {
+  display: flex;
+  align-items: center;
+  padding: 16px 32px 12px;
+  gap: 12px;
+  background: transparent;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.topbar-icon-btn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid #e2e8f0;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.18s;
+
+  &:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.notif-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #EF4444;
+  border: 1.5px solid white;
+}
+
+.sun-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: #FDFBF7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(251, 191, 36, 0.2), 0 1px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.18s;
+
+  &:hover {
+    box-shadow: 0 4px 14px rgba(251, 191, 36, 0.35);
+    transform: scale(1.05);
+  }
+}

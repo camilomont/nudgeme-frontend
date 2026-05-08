@@ -1,0 +1,71 @@
+<section class="tasks-section">
+  <div class="flex items-center justify-between mb-5">
+    <h2 class="text-lg font-extrabold text-slate-800">Tareas de hoy</h2>
+    <a href="/tasks" class="text-sm font-semibold text-emerald-600 hover:text-emerald-500 transition-colors">
+      Ver todas →
+    </a>
+  </div>
+
+  @if (isLoading) {
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      @for (i of loadingPlaceholders; track i) {
+        <div class="h-44 rounded-[32px] bg-slate-100 animate-pulse"></div>
+      }
+    </div>
+  } @else if (visibleTasks.length === 0) {
+    <div class="task-empty-state">
+      <p class="text-4xl mb-2">📋</p>
+      <p class="text-sm font-semibold text-slate-500">Sin tareas aún.</p>
+      <p class="text-xs text-slate-400 mt-1">Crea una nueva tarea para empezar.</p>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      @for (task of visibleTasks; track task._id; let i = $index) {
+        <div class="task-card" [style.background]="palette(i).bg">
+
+          <!-- Badge -->
+          <span class="energy-badge"
+                [style.background]="palette(i).badgeBg"
+                [style.color]="palette(i).badgeText">
+            {{ energyBadge(task.priority) }}
+          </span>
+
+          <!-- Title -->
+          <h3 class="task-title">{{ task.title }}</h3>
+
+          <!-- Meta row -->
+          <div class="flex items-center gap-1.5 mt-2">
+            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/>
+            </svg>
+            <span class="text-xs text-slate-500 font-medium">
+              @if (task.estimatedMinutes) { {{ task.estimatedMinutes }} min }
+              @else { ~30 min }
+            </span>
+          </div>
+
+          <!-- Progress circle + button -->
+          <div class="flex items-center justify-between mt-4">
+            <svg class="task-circle" viewBox="0 0 40 40">
+              <circle cx="20" cy="20" r="16" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="3"/>
+              @if (task.status === 'completed') {
+                <circle cx="20" cy="20" r="16" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-dasharray="100 100" stroke-linecap="round"
+                        transform="rotate(-90 20 20)" [style.color]="palette(i).badgeText"/>
+              }
+              <text x="20" y="24" text-anchor="middle" class="text-[8px] font-bold"
+                    [attr.fill]="palette(i).badgeText">
+                {{ task.status === 'completed' ? '✓' : '0%' }}
+              </text>
+            </svg>
+
+            <button class="task-btn" [style.background]="palette(i).btnGrad">
+              Comenzar
+            </button>
+          </div>
+
+        </div>
+      }
+    </div>
+  }
+</section>

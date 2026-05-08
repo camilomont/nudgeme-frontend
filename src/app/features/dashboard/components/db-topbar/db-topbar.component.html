@@ -1,0 +1,17 @@
+<header class="topbar">
+  <!-- Date -->
+  <p class="text-sm font-semibold text-slate-500 hidden sm:block">{{ dateLabel }}</p>
+
+  <div class="flex items-center gap-3 ml-auto">
+    <!-- Notification bell -->
+    <button class="topbar-icon-btn" aria-label="Notificaciones">
+      <lucide-icon [img]="Bell" [size]="18" color="#64748b"></lucide-icon>
+      <span class="notif-dot"></span>
+    </button>
+
+    <!-- Weather / Sun button -->
+    <button class="sun-btn" aria-label="Clima">
+      <lucide-icon [img]="Sun" [size]="18" color="#FBBF24"></lucide-icon>
+    </button>
+  </div>
+</header>

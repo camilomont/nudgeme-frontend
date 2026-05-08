@@ -1,166 +1,75 @@
-<div class="relative min-h-screen">
-  <nm-floating-particles />
+<div class="db-page relative flex h-screen overflow-hidden">
 
-  <div class="relative z-10 mx-auto max-w-5xl px-4 py-8">
+  <!-- Background ambient blobs -->
+  <div class="db-blob db-blob-1 pointer-events-none"></div>
+  <div class="db-blob db-blob-2 pointer-events-none"></div>
+  <div class="db-blob db-blob-3 pointer-events-none"></div>
 
-    <!-- Header -->
-    <header [animeEntrance]="'slideUp'" class="mb-8 flex items-center justify-between">
-      <div>
-        <h1 class="text-2xl font-bold text-pastel-gradient font-display">
-          ¡Hola, {{ firstName() }}! 👋
-        </h1>
-        <p class="text-sm text-slate-400">{{ todayLabel }}</p>
+  <!-- Floating particles layer -->
+  <nm-floating-particles class="fixed inset-0 z-0 pointer-events-none" />
+
+  <!-- Sidebar (desktop only) -->
+  <db-sidebar
+    class="hidden lg:flex flex-col flex-shrink-0 relative z-20 h-full"
+    [userName]="userName()"
+    [userAvatar]="userAvatar()" />
+
+  <!-- Main scrollable area -->
+  <main class="flex-1 min-w-0 overflow-y-auto flex flex-col relative z-10">
+    <db-topbar />
+
+    <div class="flex-1 px-5 lg:px-8 pb-12 pt-2 space-y-6">
+      <db-hero [firstName]="firstName()" />
+
+      <db-tasks-today [tasks]="tasks()" [isLoading]="isLoadingTasks()" />
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <db-energy-widget />
+        <db-ai-suggestion />
       </div>
-      <button
-        (click)="logout()"
-        class="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-400 transition-all hover:border-white/20 hover:text-slate-200"
-      >
-        Salir
-      </button>
-    </header>
 
-    <!-- Progress overview -->
-    @if (progress()) {
-      <section [animeEntrance]="'slideUp'" [animeDelay]="100" class="mb-8">
-        <div class="glass-card p-6">
-          <h2 class="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-500">
-            Progreso General
-          </h2>
-          <div class="mb-4">
-            <nm-progress-bar
-              [value]="progress()!.overall.percentage"
-              [label]="'Completado: ' + progress()!.overall.completed + '/' + progress()!.overall.total"
-              color="lavender"
-            />
-          </div>
-          <div class="grid grid-cols-3 gap-4">
-            @for (stat of progress()!.byType; track stat.type) {
-              <div class="rounded-xl bg-white/5 p-3 text-center">
-                <div class="mb-1 text-xs text-slate-500">{{ typeLabel(stat.type) }}</div>
-                <div class="mb-2 text-lg font-bold text-slate-200">{{ stat.percentage }}%</div>
-                <nm-progress-bar [value]="stat.percentage" [color]="typeColor(stat.type)" />
-              </div>
-            }
-          </div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2">
+          <db-stats />
         </div>
-      </section>
-    }
-
-    <!-- Tasks / Suggestions grid -->
-    <div class="grid gap-6 lg:grid-cols-2">
-
-      <!-- Recent tasks -->
-      <section [animeEntrance]="'slideUp'" [animeDelay]="200">
-        <div class="glass-card p-6">
-          <div class="mb-4 flex items-center justify-between">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500">
-              Mis Tareas
-            </h2>
-            <a
-              routerLink="/tasks"
-              class="text-xs text-lavender-300 hover:text-lavender-200"
-            >
-              Ver todas →
-            </a>
-          </div>
-
-          @if (isLoadingTasks()) {
-            <div class="space-y-3">
-              @for (i of [1,2,3]; track i) {
-                <div class="h-14 animate-pulse rounded-xl bg-white/5"></div>
-              }
-            </div>
-          } @else if (tasks().length === 0) {
-            <div class="py-8 text-center">
-              <p class="mb-2 text-3xl">📋</p>
-              <p class="text-sm text-slate-400">Sin tareas aún. ¡Prueba las sugerencias!</p>
-            </div>
-          } @else {
-            <div class="space-y-2">
-              @for (task of tasks().slice(0, 5); track task._id; let i = $index) {
-                <div
-                  [animeEntrance]="'slideUp'"
-                  [animeDelay]="i * 60"
-                  class="flex items-center gap-3 rounded-xl bg-white/5 px-4 py-3 transition-all hover:bg-white/8"
-                >
-                  <button
-                    (click)="toggleTask(task)"
-                    class="flex-shrink-0 h-5 w-5 rounded-full border-2 transition-all"
-                    [class]="task.status === 'completed'
-                      ? 'border-mint-300 bg-mint-300'
-                      : 'border-white/30 hover:border-lavender-400'"
-                  ></button>
-                  <div class="min-w-0 flex-1">
-                    <p
-                      class="truncate text-sm text-slate-200 transition-all"
-                      [class.line-through]="task.status === 'completed'"
-                      [class.opacity-50]="task.status === 'completed'"
-                    >
-                      {{ task.title }}
-                    </p>
-                    <div class="mt-0.5 flex items-center gap-2">
-                      <span class="text-xs text-slate-500">{{ typeLabel(task.type) }}</span>
-                      @if (task.aiGenerated) {
-                        <span class="tag-chip bg-lavender-400/10 text-lavender-300 text-[10px] py-0.5 px-1.5">✨ IA</span>
-                      }
-                    </div>
-                  </div>
-                </div>
-              }
-            </div>
-          }
-        </div>
-      </section>
-
-      <!-- AI Suggestions -->
-      <section [animeEntrance]="'slideUp'" [animeDelay]="300">
-        <div class="glass-card p-6">
-          <div class="mb-4 flex items-center justify-between">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500">
-              Sugerencias IA ✨
-            </h2>
-            <button
-              (click)="loadSuggestions()"
-              [disabled]="isLoadingSuggestions()"
-              class="text-xs text-sky-300 hover:text-sky-200 disabled:opacity-40"
-            >
-              {{ isLoadingSuggestions() ? 'Generando...' : 'Actualizar' }}
-            </button>
-          </div>
-
-          @if (isLoadingSuggestions()) {
-            <div class="space-y-3">
-              @for (i of [1,2,3]; track i) {
-                <div class="h-16 animate-pulse rounded-xl bg-white/5"></div>
-              }
-            </div>
-          } @else {
-            <div class="space-y-2">
-              @for (s of suggestions(); track s.title; let i = $index) {
-                <div
-                  [animeEntrance]="'slideUp'"
-                  [animeDelay]="i * 80"
-                  class="group rounded-xl border border-white/5 bg-white/5 p-3 transition-all hover:border-lavender-400/30"
-                >
-                  <div class="flex items-start justify-between gap-2">
-                    <div class="min-w-0 flex-1">
-                      <p class="text-sm font-medium text-slate-200">{{ s.title }}</p>
-                      <p class="mt-0.5 text-xs text-slate-500">{{ s.rationale }}</p>
-                    </div>
-                    <button
-                      (click)="acceptSuggestion(s)"
-                      class="flex-shrink-0 rounded-lg bg-lavender-400/20 px-2 py-1 text-xs text-lavender-300 opacity-0 transition-all group-hover:opacity-100 hover:bg-lavender-400/30"
-                    >
-                      + Añadir
-                    </button>
-                  </div>
-                </div>
-              }
-            </div>
-          }
-        </div>
-      </section>
-
+        <db-focus-streak />
+      </div>
     </div>
-  </div>
+  </main>
+
+  <!-- Mobile bottom navigation -->
+  <nav class="db-mobile-nav lg:hidden">
+    <button class="db-mobile-nav-item db-mobile-nav-item--active">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline stroke-linecap="round" stroke-linejoin="round" points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      <span class="text-[10px] font-semibold">Inicio</span>
+    </button>
+    <button class="db-mobile-nav-item">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/>
+      </svg>
+      <span class="text-[10px] font-medium">Tareas</span>
+    </button>
+    <button class="db-mobile-nav-item">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13 2 4.09 12.96A.5.5 0 004.5 14H11l-1 8 8.91-10.96A.5.5 0 0018.5 10H12l1-8z"/>
+      </svg>
+      <span class="text-[10px] font-medium">Energía</span>
+    </button>
+    <button class="db-mobile-nav-item">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18M7 16l4-4 4 4 4-4"/>
+      </svg>
+      <span class="text-[10px] font-medium">Stats</span>
+    </button>
+    <button class="db-mobile-nav-item">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 2l1.5 4.5H18l-3.75 2.73 1.5 4.5L12 11.26 8.25 13.73l1.5-4.5L6 6.5h4.5z"/>
+      </svg>
+      <span class="text-[10px] font-medium">IA</span>
+    </button>
+  </nav>
+
 </div>

@@ -1,0 +1,51 @@
+<section class="hero-card">
+
+  <!-- LEFT: Text + stat chips -->
+  <div class="hero-left">
+    <span class="hero-eyebrow">¡Buenas, bienvenido!</span>
+    <h1 class="hero-title">¡Hola, {{ firstName || 'campeón' }}! 👋</h1>
+    <p class="hero-subtitle">
+      Hoy tienes <span class="hero-energy-text">energía alta.</span><br>
+      Vamos a aprovecharla.
+    </p>
+
+    <!-- Stat chips -->
+    <div class="flex flex-wrap gap-2.5 mt-5">
+      <div class="stat-chip stat-chip--orange">
+        <span class="text-base leading-none">🔥</span>
+        <div>
+          <p class="text-xs font-bold text-orange-800 leading-tight">7 días enfocado</p>
+          <p class="text-[10px] text-orange-600">¡Sigue así!</p>
+        </div>
+      </div>
+      <div class="stat-chip stat-chip--green">
+        <span class="text-base leading-none">⚡</span>
+        <div>
+          <p class="text-xs font-bold text-emerald-800 leading-tight">Energía alta</p>
+          <p class="text-[10px] text-emerald-600">Aprovecha el día</p>
+        </div>
+      </div>
+      <div class="stat-chip stat-chip--lila">
+        <span class="text-base leading-none">🎯</span>
+        <div>
+          <p class="text-xs font-bold text-purple-800 leading-tight">3 tareas</p>
+          <p class="text-[10px] text-purple-600">Para hoy</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Character -->
+  <div class="hero-right">
+    <div class="hero-blob"></div>
+    <div class="hero-star hero-star-1">✦</div>
+    <div class="hero-star hero-star-2">✦</div>
+    <div class="hero-star hero-star-3">★</div>
+    <img
+      src="assets/images/estadoDeAnimo.png"
+      alt="NudgeMe character"
+      class="hero-character"
+    />
+  </div>
+
+</section>

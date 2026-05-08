@@ -1,0 +1,64 @@
+<aside class="sidebar-inner">
+
+  <!-- Logo pill -->
+  <div class="logo-pill">
+    <div class="logo-circle">
+      <span class="text-white font-black text-base leading-none">n</span>
+    </div>
+    <span class="text-slate-700 font-bold text-sm tracking-tight">NudgeMe</span>
+  </div>
+
+  <!-- Nav items -->
+  <nav class="flex-1 mt-6 space-y-1">
+    @for (item of navItems; track item.label) {
+      <button class="nav-item" [class.nav-item--active]="item.active">
+        @if (item.active) { <span class="nav-indicator"></span> }
+        <lucide-icon
+          [img]="item.icon"
+          [size]="19"
+          [color]="item.active ? '#16a34a' : '#64748b'">
+        </lucide-icon>
+        <span class="text-sm font-medium">{{ item.label }}</span>
+      </button>
+    }
+  </nav>
+
+  <!-- Profile card -->
+  <div class="profile-card">
+    <div class="flex items-center gap-3 mb-3">
+      <div class="avatar-wrap">
+        @if (userAvatar) {
+          <img [src]="userAvatar" alt="Avatar" class="w-full h-full object-cover rounded-full" />
+        } @else {
+          <img src="assets/images/estadoDeAnimo.png" alt="Avatar"
+               class="w-full h-full object-cover rounded-full" style="mix-blend-mode:multiply" />
+        }
+      </div>
+      <div class="min-w-0">
+        <p class="text-sm font-bold text-slate-800 truncate">{{ userName }}</p>
+        <p class="text-xs text-slate-400 font-medium">Nivel {{ level }}</p>
+      </div>
+    </div>
+    <div class="xp-track">
+      <div class="xp-fill" [style.width.%]="xpPercent"></div>
+    </div>
+    <p class="text-[10px] text-slate-400 mt-1.5 font-medium">{{ xp }} / {{ xpMax }} XP</p>
+  </div>
+
+  <!-- Motivational quote -->
+  <div class="quote-card">
+    <p class="text-xs text-emerald-800 font-medium leading-relaxed text-center">
+      "Pequeños pasos hoy,<br>grandes logros mañana."
+    </p>
+    <div class="flex justify-center mt-2">
+      <lucide-icon [img]="Heart" [size]="14" color="#16a34a"></lucide-icon>
+    </div>
+  </div>
+
+  <!-- Logout -->
+  <button (click)="logout()" class="logout-btn">
+    <lucide-icon [img]="LogOut" [size]="15" color="#94a3b8"></lucide-icon>
+    <span class="text-xs text-slate-400 font-medium">Cerrar sesión</span>
+  </button>
+
+</aside>

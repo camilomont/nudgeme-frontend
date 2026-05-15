@@ -1,0 +1,79 @@
+<section class="stats-card">
+  <h2 class="text-base font-extrabold mb-4" style="color:#1A1D1F">Tu progreso esta semana</h2>
+
+  <div class="stats-inner">
+
+    <!-- Metric 1: Productivity ring -->
+    <div class="stat-item">
+      <div class="stat-ring-wrap">
+        <svg width="76" height="76" viewBox="0 0 76 76">
+          <circle cx="38" cy="38" r="30" fill="none" stroke="#f1f5f9" stroke-width="8"/>
+          <circle #circleRef cx="38" cy="38" r="30" fill="none"
+                  stroke="url(#grad-prod)" stroke-width="8"
+                  stroke-linecap="round"
+                  [attr.stroke-dasharray]="circumference"
+                  [attr.stroke-dashoffset]="circumference"
+                  transform="rotate(-90 38 38)"/>
+          <defs>
+            <linearGradient id="grad-prod" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#00B87C"/>
+              <stop offset="100%" stop-color="#009963"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="stat-center">
+          <span class="stat-num">{{ progressPct }}%</span>
+        </div>
+      </div>
+      <div class="stat-labels">
+        <p class="stat-label-main">Productividad esta semana</p>
+        <p class="stat-label-sub" style="color:#00B87C">¡Excelente!</p>
+      </div>
+    </div>
+
+    <div class="stat-sep"></div>
+
+    <!-- Metric 2: Tasks solid circle -->
+    <div class="stat-item">
+      <div class="stat-ring-wrap">
+        <div class="stat-solid-circle">
+          <span class="stat-num" style="color:#4338CA">12</span>
+        </div>
+      </div>
+      <div class="stat-labels">
+        <p class="stat-label-main">Tareas completadas</p>
+        <p class="stat-label-sub">de 15</p>
+      </div>
+    </div>
+
+    <div class="stat-sep"></div>
+
+    <!-- Metric 3: Focus time ring -->
+    <div class="stat-item">
+      <div class="stat-ring-wrap">
+        <svg width="76" height="76" viewBox="0 0 76 76">
+          <circle cx="38" cy="38" r="30" fill="none" stroke="#f1f5f9" stroke-width="8"/>
+          <circle cx="38" cy="38" r="30" fill="none"
+                  stroke="url(#grad-focus)" stroke-width="8"
+                  stroke-linecap="round"
+                  [attr.stroke-dasharray]="focusDash"
+                  transform="rotate(-90 38 38)"/>
+          <defs>
+            <linearGradient id="grad-focus" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#34D399"/>
+              <stop offset="100%" stop-color="#06B6D4"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="stat-center">
+          <span class="stat-num" style="font-size:0.78rem; line-height:1.1">5h<br><span style="font-size:0.65rem; font-weight:600; color:#8A94A6">30m</span></span>
+        </div>
+      </div>
+      <div class="stat-labels">
+        <p class="stat-label-main">Enfoque total</p>
+        <p class="stat-label-sub">Esta semana</p>
+      </div>
+    </div>
+
+  </div>
+</section>

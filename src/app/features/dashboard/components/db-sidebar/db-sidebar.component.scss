@@ -1,0 +1,144 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 260px;
+  flex-shrink: 0;
+}
+
+.sidebar-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 24px 16px 20px;
+  background: white;
+  border-radius: 28px;
+  box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.05);
+  overflow-y: auto;
+}
+
+// ── Logo pill ──────────────────────────────────────────────────
+.logo-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px 8px 8px;
+  background: white;
+  border: 1.5px solid #f1f5f9;
+  border-radius: 16px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.04);
+  width: fit-content;
+  margin-bottom: 4px;
+}
+
+.logo-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+// ── Nav items ──────────────────────────────────────────────────
+.nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: left;
+  color: #8A94A6;
+
+  &:hover:not(.nav-item--active) {
+    background: #f8fafc;
+    color: #475569;
+  }
+
+  &--active {
+    background: #E6F8F3;
+    color: #00B87C;
+    margin-left: 8px;
+    margin-right: 8px;
+    width: calc(100% - 16px);
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 22px;
+      border-radius: 0 4px 4px 0;
+      background: #00B87C;
+      box-shadow: 2px 0 8px rgba(0, 184, 124, 0.4);
+    }
+  }
+}
+
+// ── Profile card ───────────────────────────────────────────────
+.profile-card {
+  margin-top: auto;
+  padding: 16px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.04);
+  border: 1.5px solid #f1f5f9;
+}
+
+.profile-arrow-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1.5px solid #e2e8f0;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s;
+
+  &:hover {
+    background: #f1f5f9;
+    color: #475569;
+  }
+}
+
+.avatar-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #E6F8F3;
+  border: 2px solid rgba(0, 184, 124, 0.2);
+}
+
+.xp-track {
+  height: 8px;
+  background: #f1f5f9;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.xp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00B87C, #009963);
+  border-radius: 99px;
+  transition: width 0.8s ease;
+}
+
+// ── Motivational quote ─────────────────────────────────────────
+.quote-card {
+  margin-top: 10px;
+  padding: 20px 24px;
+  background: #E6F8F3;
+  border-radius: 16px;
+}

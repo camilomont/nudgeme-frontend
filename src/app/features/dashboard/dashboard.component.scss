@@ -1,0 +1,119 @@
+// ── Page shell ────────────────────────────────────────────────
+.db-page {
+  background: #F4F7F6;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 20px;
+  padding: 20px;
+
+  @media (min-width: 1024px) {
+    padding: 24px;
+    gap: 24px;
+  }
+}
+
+// ── Main content area ─────────────────────────────────────────
+.db-main {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.db-content {
+  flex: 1;
+  padding-bottom: 88px;
+
+  @media (min-width: 1024px) {
+    padding-bottom: 40px;
+  }
+}
+
+// ── Ambient blobs ─────────────────────────────────────────────
+.db-blob {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+.db-blob-1 {
+  top: -8%;
+  left: 10%;
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(0, 184, 124, 0.07) 0%, transparent 65%);
+}
+.db-blob-2 {
+  top: 40%;
+  right: -5%;
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.05) 0%, transparent 65%);
+}
+.db-blob-3 {
+  bottom: -5%;
+  left: 30%;
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.05) 0%, transparent 65%);
+}
+
+// ── Content grid ──────────────────────────────────────────────
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+
+  @media (min-width: 1024px) {
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+  }
+}
+
+// ── Mobile bottom nav ─────────────────────────────────────────
+.db-mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 10px 8px 14px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(226, 232, 240, 0.7);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.06);
+
+  @media (min-width: 1024px) {
+    display: none;
+  }
+}
+
+.db-mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 14px;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.18s;
+
+  &:hover { background: #f1f5f9; color: #475569; }
+
+  &--active {
+    color: #00B87C;
+    background: #E6F8F3;
+    span { font-weight: 700; }
+  }
+}

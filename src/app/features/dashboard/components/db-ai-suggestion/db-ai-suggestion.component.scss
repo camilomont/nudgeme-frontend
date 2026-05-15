@@ -1,0 +1,111 @@
+.ai-card {
+  position: relative;
+  background: radial-gradient(ellipse at 75% 50%, rgba(6, 182, 212, 0.07) 0%, white 60%);
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  border-radius: 24px;
+  padding: 24px 28px;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+}
+
+// ── Stars ─────────────────────────────────────────────────────
+.ai-star {
+  position: absolute;
+  pointer-events: none;
+  animation: ai-star-twinkle 3s ease-in-out infinite;
+  z-index: 1;
+  opacity: 0.6;
+}
+.ai-star-1 { top: 12%;  right: 18%; font-size: 11px; animation-delay: 0s;   color: #FBBF24; }
+.ai-star-2 { top: 55%;  right: 10%; font-size: 8px;  animation-delay: 1.3s; color: #FBBF24; }
+.ai-star-3 { top: 25%;  right: 32%; font-size: 7px;  animation-delay: 0.7s; color: #A78BFA; }
+
+@keyframes ai-star-twinkle {
+  0%, 100% { opacity: 0.4; transform: scale(1);   }
+  50%       { opacity: 0.9; transform: scale(1.4); }
+}
+
+.ai-icon-wrap {
+  width: 28px; height: 28px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #00B87C, #009963);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 10px rgba(0,184,124,0.35);
+  flex-shrink: 0;
+}
+
+// ── Content row ───────────────────────────────────────────────
+.ai-content-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  position: relative;
+  z-index: 10;
+}
+
+.ai-text {
+  font-size: 0.86rem;
+  line-height: 1.7;
+  color: #1A1D1F;
+}
+
+.ai-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #00B87C, #009963);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,184,124,0.4);
+  transition: all 0.2s;
+  margin-top: 14px;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0,184,124,0.5);
+  }
+  &:active { transform: scale(0.97); }
+}
+
+// ── Bot image ─────────────────────────────────────────────────
+.bot-wrap {
+  position: relative;
+  width: 110px;
+  max-width: 120px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bot-glow {
+  position: absolute;
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(6,182,212,0.15), transparent 65%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.bot-img {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 110px;
+  max-height: 120px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  animation: bot-float 4s ease-in-out infinite;
+  filter: drop-shadow(0 4px 14px rgba(6,182,212,0.2));
+}
+
+@keyframes bot-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}

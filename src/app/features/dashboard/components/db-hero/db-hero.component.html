@@ -1,0 +1,61 @@
+<section class="hero-card">
+
+  <!-- Background floating circles -->
+  <div class="hero-float hero-float-1"></div>
+  <div class="hero-float hero-float-2"></div>
+  <div class="hero-float hero-float-3"></div>
+
+  <!-- LEFT: Text + stat chips -->
+  <div class="hero-left">
+    <h1 class="hero-title">¡Hola, {{ firstName || 'campeón' }}! 👋</h1>
+    <p class="hero-subtitle">
+      Hoy tienes <span class="hero-energy-text">energía alta.</span>
+    </p>
+    <p class="hero-support">Vamos a aprovecharla.</p>
+
+    <!-- Stat pills -->
+    <div class="hero-stats-row">
+      <div class="hero-stat">
+        <div class="hero-stat-icon" style="background:#FFF5E6">
+          <lucide-icon [img]="Flame"  [size]="18" [strokeWidth]="2" color="#F97316" />
+        </div>
+        <div>
+          <p class="text-xs font-bold leading-tight" style="color:#0F172A">7 días enfocado</p>
+          <p class="text-[11px] mt-0.5 font-semibold" style="color:#00B87C">¡Sigue así!</p>
+        </div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-icon" style="background:#E6F8F3">
+          <lucide-icon [img]="Zap"    [size]="18" [strokeWidth]="2" color="#00B87C" />
+        </div>
+        <div>
+          <p class="text-xs font-bold leading-tight" style="color:#0F172A">Energía alta</p>
+          <p class="text-[11px] mt-0.5 font-medium" style="color:#94a3b8">Aprovecha el día</p>
+        </div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-icon" style="background:#F3E8FF">
+          <lucide-icon [img]="Target" [size]="18" [strokeWidth]="2" color="#A881FF" />
+        </div>
+        <div>
+          <p class="text-xs font-bold leading-tight" style="color:#0F172A">3 tareas importantes</p>
+          <p class="text-[11px] mt-0.5 font-medium" style="color:#94a3b8">Para hoy</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Character -->
+  <div class="hero-right">
+    <div class="hero-blob"></div>
+    <div class="hero-star hero-star-1">✦</div>
+    <div class="hero-star hero-star-2">✦</div>
+    <div class="hero-star hero-star-3">★</div>
+    <img
+      src="assets/images/estadoDeAnimo.png"
+      alt="NudgeMe character"
+      class="hero-character"
+    />
+  </div>
+
+</section>

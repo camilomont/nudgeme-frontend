@@ -1,0 +1,37 @@
+.streak-card {
+  background: white;
+  border-radius: 24px;
+  padding: 18px;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.03);
+  border: 1.5px solid #f1f5f9;
+}
+
+.streak-badge {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #F97316, #EA580C);
+  color: white;
+  font-size: 1rem;
+  font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 10px rgba(249,115,22,0.4);
+  flex-shrink: 0;
+}
+
+.day-circle {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+
+  &--done {
+    background: linear-gradient(135deg, #00B87C, #009963);
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,184,124,0.3);
+  }
+
+  &--pending {
+    background: transparent;
+    border: 2px dashed #D1D5DB;
+  }
+}

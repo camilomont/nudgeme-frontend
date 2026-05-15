@@ -1,0 +1,77 @@
+<section class="tasks-section">
+  <div class="flex items-center justify-between mb-5">
+    <h2 class="text-base font-extrabold" style="color:#1A1D1F">Tareas de hoy</h2>
+    <a href="/tasks" class="text-sm font-medium transition-colors" style="color:#00B87C">
+      Ver todas →
+    </a>
+  </div>
+
+  @if (isLoading) {
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      @for (i of loadingPlaceholders; track i) {
+        <div class="h-56 rounded-[20px] bg-slate-100 animate-pulse"></div>
+      }
+    </div>
+  } @else if (visibleTasks.length === 0) {
+    <div class="task-empty-state">
+      <p class="text-4xl mb-2">📋</p>
+      <p class="text-sm font-semibold text-slate-500">Sin tareas aún.</p>
+      <p class="text-xs text-slate-400 mt-1">Crea una nueva tarea para empezar.</p>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      @for (task of visibleTasks; track task._id; let i = $index) {
+        <div class="task-card"
+             [style.border]="'1.5px solid ' + palette(i).borderColor"
+             [style.box-shadow]="'0 8px 24px ' + palette(i).shadowColor">
+
+          <!-- Top: icon + 3-dot -->
+          <div class="flex items-center justify-between">
+            <div class="task-icon-circle" [style.background]="palette(i).iconBg">
+              <lucide-icon
+                [img]="taskIconObj(task.priority)"
+                [size]="20"
+                [strokeWidth]="2"
+                [color]="palette(i).accentColor" />
+            </div>
+            <button class="task-menu-btn" aria-label="Opciones">
+              <span class="task-dot"></span>
+              <span class="task-dot"></span>
+              <span class="task-dot"></span>
+            </button>
+          </div>
+
+          <!-- Title -->
+          <h3 class="task-title">{{ task.title }}</h3>
+
+          <!-- Badge -->
+          <span class="energy-badge"
+                [style.background]="palette(i).badgeBg"
+                [style.color]="palette(i).accentColor">
+            {{ energyBadge(task.priority) }}
+          </span>
+
+          <!-- Time row -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="#8A94A6" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/>
+              </svg>
+              <span class="text-xs font-medium" style="color:#8A94A6">
+                @if (task.estimatedMinutes) { {{ task.estimatedMinutes }} min }
+                @else { ~30 min }
+              </span>
+            </div>
+            <div class="task-pct-circle">0%</div>
+          </div>
+
+          <!-- Button -->
+          <button class="task-btn" [style.background]="palette(i).btnGrad" [style.box-shadow]="palette(i).btnShadow">
+            Comenzar
+          </button>
+
+        </div>
+      }
+    </div>
+  }
+</section>

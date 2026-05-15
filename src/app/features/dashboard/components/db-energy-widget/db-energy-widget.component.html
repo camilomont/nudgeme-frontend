@@ -1,11 +1,10 @@
 <section class="energy-card">
   <div class="flex items-start justify-between mb-1">
     <div>
-      <h2 class="text-base font-extrabold text-slate-800">¿Cómo te sientes hoy?</h2>
-      <p class="text-xs text-slate-400 mt-0.5">Muéstranos tu nivel de energía actual</p>
+      <h2 class="text-base font-extrabold" style="color:#1A1D1F">¿Cómo te sientes hoy?</h2>
+      <p class="text-xs mt-0.5 font-medium" style="color:#8A94A6">Muéstranos tu nivel de energía</p>
     </div>
-    <!-- Bolt indicator top right -->
-    <div class="bolt-badge" [style.background]="energyColor() + '20'" [style.color]="energyColor()">
+    <div class="bolt-badge" [style.background]="energyColor() + '18'" [style.color]="energyColor()">
       <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
         <path d="M13 2 4.09 12.96A.5.5 0 004.5 14H11l-1 8 8.91-10.96A.5.5 0 0018.5 10H12l1-8z"/>
       </svg>
@@ -13,7 +12,7 @@
   </div>
 
   <!-- Slider -->
-  <div class="energy-slider-wrapper mt-6">
+  <div class="energy-slider-wrapper mt-5">
     <div class="energy-bolt" [style.left]="boltLeft()" [style.color]="energyColor()">
       <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
         <path d="M13 2 4.09 12.96A.5.5 0 004.5 14H11l-1 8 8.91-10.96A.5.5 0 0018.5 10H12l1-8z"/>
@@ -32,10 +31,16 @@
   <!-- Emoji row -->
   <div class="flex justify-between mt-4">
     @for (e of energyEmojis; track $index; let i = $index) {
-      <div class="emoji-item"
-           [style.background]="activeEmojiIndex() === i ? energyColor() + '20' : 'transparent'"
-           [style.outline]="activeEmojiIndex() === i ? '2px solid ' + energyColor() : 'none'">
-        <img [src]="e.icon" class="w-6 h-6" alt="" draggable="false" />
+      <div class="emoji-wrap">
+        @if (activeEmojiIndex() === i) {
+          <span class="emoji-float-face">😊</span>
+        }
+        <div class="emoji-item"
+             [class.emoji-item--active]="activeEmojiIndex() === i"
+             [style.background]="activeEmojiIndex() === i ? energyColor() + '1A' : 'transparent'"
+             [style.border]="activeEmojiIndex() === i ? '2px solid ' + energyColor() : '2px solid transparent'">
+          <img [src]="e.icon" class="w-6 h-6" alt="" draggable="false" />
+        </div>
       </div>
     }
   </div>

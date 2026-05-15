@@ -10,12 +10,12 @@ import { CommonModule } from '@angular/common';
 })
 export class DbFocusStreakComponent {
   readonly days = [
-    { label: 'L', done: true  },
-    { label: 'M', done: true  },
-    { label: 'X', done: true  },
-    { label: 'J', done: true  },
-    { label: 'V', done: true  },
-    { label: 'S', done: true  },
-    { label: 'D', done: false },
+    { label: 'Lun', done: true  },
+    { label: 'Mar', done: true  },
+    { label: 'Mié', done: true  },
+    { label: 'Jue', done: true  },
+    { label: 'Vie', done: true  },
+    { label: 'Sáb', done: true  },
+    { label: 'Dom', done: false },
   ];
 }

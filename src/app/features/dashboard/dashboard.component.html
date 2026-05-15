@@ -1,4 +1,4 @@
-<div class="db-page relative flex h-screen overflow-hidden">
+<div class="db-page">
 
   <!-- Background ambient blobs -->
   <div class="db-blob db-blob-1 pointer-events-none"></div>
@@ -10,35 +10,35 @@
 
   <!-- Sidebar (desktop only) -->
   <db-sidebar
-    class="hidden lg:flex flex-col flex-shrink-0 relative z-20 h-full"
+    class="hidden lg:flex flex-col relative z-20"
     [userName]="userName()"
     [userAvatar]="userAvatar()" />
 
   <!-- Main scrollable area -->
-  <main class="flex-1 min-w-0 overflow-y-auto flex flex-col relative z-10">
+  <main class="db-main relative z-10">
     <db-topbar />
 
-    <div class="flex-1 px-5 lg:px-8 pb-12 pt-2 space-y-6">
-      <db-hero [firstName]="firstName()" />
+    <div class="db-content">
+      <db-hero [firstName]="firstName()" class="block mb-5" />
 
-      <db-tasks-today [tasks]="tasks()" [isLoading]="isLoadingTasks()" />
-
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <db-energy-widget />
-        <db-ai-suggestion />
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2">
+      <div class="content-grid">
+        <!-- Left: Tasks + Stats -->
+        <div class="space-y-5">
+          <db-tasks-today [tasks]="tasks()" [isLoading]="isLoadingTasks()" />
           <db-stats />
         </div>
-        <db-focus-streak />
+        <!-- Right: Energy + AI + Streak -->
+        <div class="space-y-4">
+          <db-energy-widget />
+          <db-ai-suggestion />
+          <db-focus-streak />
+        </div>
       </div>
     </div>
   </main>
 
   <!-- Mobile bottom navigation -->
-  <nav class="db-mobile-nav lg:hidden">
+  <nav class="db-mobile-nav">
     <button class="db-mobile-nav-item db-mobile-nav-item--active">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>

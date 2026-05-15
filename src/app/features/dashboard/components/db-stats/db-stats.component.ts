@@ -17,9 +17,12 @@ import anime from 'animejs';
 export class DbStatsComponent implements AfterViewInit {
   @ViewChild('circleRef') circleRef!: ElementRef<SVGCircleElement>;
 
-  readonly radius       = 38;
+  readonly radius        = 30;
   readonly circumference = 2 * Math.PI * this.radius;
-  readonly progressPct  = 82;
+  readonly progressPct   = 82;
+
+  get tasksDash()  { return `${this.circumference * 0.8}  ${this.circumference}`; }
+  get focusDash()  { return `${this.circumference * 0.25} ${this.circumference}`; }
 
   ngAfterViewInit() {
     const offset = this.circumference - (this.progressPct / 100) * this.circumference;

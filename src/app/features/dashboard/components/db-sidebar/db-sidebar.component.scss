@@ -9,12 +9,10 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 1.5rem 1rem 1.25rem;
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(24px);
-  border-right: 1px solid rgba(226, 232, 240, 0.5);
-  border-radius: 0 32px 32px 0;
-  box-shadow: 4px 0 32px rgba(0, 0, 0, 0.04), 1px 0 0 rgba(255, 255, 255, 0.5);
+  padding: 24px 16px 20px;
+  background: white;
+  border-radius: 28px;
+  box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.05);
   overflow-y: auto;
 }
 
@@ -23,25 +21,21 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 14px 8px 8px;
+  padding: 8px 16px 8px 8px;
   background: white;
-  border: 1.5px solid #e2e8f0;
+  border: 1.5px solid #f1f5f9;
   border-radius: 16px;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.04);
   width: fit-content;
   margin-bottom: 4px;
 }
 
-.logo-circle {
+.logo-img {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  object-fit: cover;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.35);
 }
 
 // ── Nav items ──────────────────────────────────────────────────
@@ -51,50 +45,70 @@
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 14px;
+  padding: 10px 14px;
+  border-radius: 12px;
   border: none;
   background: transparent;
   cursor: pointer;
   transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: left;
-  color: #64748b;
+  color: #8A94A6;
 
   &:hover:not(.nav-item--active) {
     background: #f8fafc;
     color: #475569;
-    transform: translateX(2px);
   }
 
   &--active {
-    background: #DCFCE7;
-    color: #16a34a;
-    box-shadow: 0 2px 10px rgba(34, 197, 94, 0.12);
+    background: #E6F8F3;
+    color: #00B87C;
+    margin-left: 8px;
+    margin-right: 8px;
+    width: calc(100% - 16px);
 
-    span.text-sm { font-weight: 700; color: #15803d; }
+    &::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 22px;
+      border-radius: 0 4px 4px 0;
+      background: #00B87C;
+      box-shadow: 2px 0 8px rgba(0, 184, 124, 0.4);
+    }
   }
-}
-
-.nav-indicator {
-  position: absolute;
-  left: -16px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 22px;
-  border-radius: 0 4px 4px 0;
-  background: #22C55E;
-  box-shadow: 2px 0 8px rgba(34, 197, 94, 0.45);
 }
 
 // ── Profile card ───────────────────────────────────────────────
 .profile-card {
   margin-top: auto;
-  padding: 14px;
+  padding: 16px;
   background: white;
   border-radius: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.04);
   border: 1.5px solid #f1f5f9;
+}
+
+.profile-arrow-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1.5px solid #e2e8f0;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s;
+
+  &:hover {
+    background: #f1f5f9;
+    color: #475569;
+  }
 }
 
 .avatar-wrap {
@@ -103,46 +117,28 @@
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
-  background: #f0fdf4;
-  border: 2px solid #BBF7D0;
+  background: #E6F8F3;
+  border: 2px solid rgba(0, 184, 124, 0.2);
 }
 
 .xp-track {
-  height: 6px;
+  height: 8px;
   background: #f1f5f9;
-  border-radius: 999px;
+  border-radius: 99px;
   overflow: hidden;
 }
 
 .xp-fill {
   height: 100%;
-  background: linear-gradient(90deg, #22C55E, #16A34A);
-  border-radius: 999px;
+  background: linear-gradient(90deg, #00B87C, #009963);
+  border-radius: 99px;
   transition: width 0.8s ease;
 }
 
 // ── Motivational quote ─────────────────────────────────────────
 .quote-card {
   margin-top: 10px;
-  padding: 12px 14px;
-  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  padding: 20px 24px;
+  background: #E6F8F3;
   border-radius: 16px;
-  border: 1px solid rgba(34, 197, 94, 0.15);
-}
-
-// ── Logout ─────────────────────────────────────────────────────
-.logout-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 8px 12px;
-  margin-top: 8px;
-  border: none;
-  background: transparent;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background 0.15s;
-
-  &:hover { background: #f8fafc; }
 }

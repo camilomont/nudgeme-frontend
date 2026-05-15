@@ -1,6 +1,37 @@
-// ── Page background ──────────────────────────────────────────
+// ── Page shell ────────────────────────────────────────────────
 .db-page {
-  background: #F7F8FC;
+  background: #F4F7F6;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 20px;
+  padding: 20px;
+
+  @media (min-width: 1024px) {
+    padding: 24px;
+    gap: 24px;
+  }
+}
+
+// ── Main content area ─────────────────────────────────────────
+.db-main {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.db-content {
+  flex: 1;
+  padding-bottom: 88px;
+
+  @media (min-width: 1024px) {
+    padding-bottom: 40px;
+  }
 }
 
 // ── Ambient blobs ─────────────────────────────────────────────
@@ -15,7 +46,7 @@
   left: 10%;
   width: 480px;
   height: 480px;
-  background: radial-gradient(circle, rgba(34, 197, 94, 0.07) 0%, transparent 65%);
+  background: radial-gradient(circle, rgba(0, 184, 124, 0.07) 0%, transparent 65%);
 }
 .db-blob-2 {
   top: 40%;
@@ -30,6 +61,18 @@
   width: 350px;
   height: 350px;
   background: radial-gradient(circle, rgba(251, 191, 36, 0.05) 0%, transparent 65%);
+}
+
+// ── Content grid ──────────────────────────────────────────────
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+
+  @media (min-width: 1024px) {
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+  }
 }
 
 // ── Mobile bottom nav ─────────────────────────────────────────
@@ -47,6 +90,10 @@
   backdrop-filter: blur(20px);
   border-top: 1px solid rgba(226, 232, 240, 0.7);
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.06);
+
+  @media (min-width: 1024px) {
+    display: none;
+  }
 }
 
 .db-mobile-nav-item {
@@ -65,8 +112,8 @@
   &:hover { background: #f1f5f9; color: #475569; }
 
   &--active {
-    color: #16a34a;
-    background: #dcfce7;
+    color: #00B87C;
+    background: #E6F8F3;
     span { font-weight: 700; }
   }
 }

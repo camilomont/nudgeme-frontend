@@ -18,7 +18,7 @@ export class DbEnergyWidgetComponent {
     if (v < 25) return '#EF4444';
     if (v < 50) return '#F97316';
     if (v < 75) return '#FACC15';
-    return '#22C55E';
+    return '#00B87C';
   });
 
   readonly boltLeft = computed(() => {

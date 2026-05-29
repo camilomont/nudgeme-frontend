@@ -54,3 +54,32 @@ docs: agregar SDD del módulo auth
 | Frontend | `nudgeme-frontend/` → `origin` (camilomont/nudgeme-frontend) |
 
 Siempre trabajar dentro de la carpeta del repo correspondiente.
+
+## Testing
+
+**Siempre correr tests antes de hacer commit.**
+
+```bash
+# Frontend
+$env:CHROME_BIN = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+npm test -- --watch=false --browsers=ChromeHeadless
+```
+
+```bash
+# Backend
+cd nudgeme-backend
+npm test
+```
+
+Total: **59 tests** (38 frontend + 21 backend).
+
+## CI/CD
+
+El repo tiene un workflow en `.github/workflows/deploy.yml` que corre en cada push a `main`:
+
+1. `npm ci` — instalación limpia
+2. `npm test` — tests unitarios
+3. `npm run build` — compilación de producción
+4. `curl` al Deploy Hook de Vercel — despliegue automático
+
+**Para activar el CI/CD**, habilitar GitHub Actions en Settings → Actions → Allow all actions.

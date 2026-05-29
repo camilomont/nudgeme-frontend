@@ -1,17 +1,18 @@
 import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { LucideAngularModule, Home, CheckSquare, Zap, BarChart2, Sparkles, Settings, Heart, LogOut } from 'lucide-angular';
 import { AuthService } from '@core/services/auth.service';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type LucideIcon = any;
 
-interface NavItem { icon: LucideIcon; label: string; active: boolean; }
+interface NavItem { icon: LucideIcon; label: string; route: string; }
 
 @Component({
   selector: 'db-sidebar',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, RouterLink, RouterLinkActive],
   templateUrl: './db-sidebar.component.html',
   styleUrl: './db-sidebar.component.scss',
 })
@@ -30,12 +31,12 @@ export class DbSidebarComponent {
   readonly LogOut    = LogOut;
 
   readonly navItems: NavItem[] = [
-    { icon: Home,        label: 'Inicio',          active: true  },
-    { icon: CheckSquare, label: 'Mis tareas',       active: false },
-    { icon: Zap,         label: 'Energía',          active: false },
-    { icon: BarChart2,   label: 'Estadísticas',     active: false },
-    { icon: Sparkles,    label: 'IA Suggestions',   active: false },
-    { icon: Settings,    label: 'Configuración',    active: false },
+    { icon: Home,        label: 'Inicio',        route: '/dashboard'  },
+    { icon: CheckSquare, label: 'Mis tareas',    route: '/tasks'      },
+    { icon: Zap,         label: 'Energía',       route: '/dashboard'  },
+    { icon: BarChart2,   label: 'Estadísticas',  route: '/dashboard'  },
+    { icon: Sparkles,    label: 'IA Suggestions',route: '/dashboard'  },
+    { icon: Settings,    label: 'Configuración', route: '/dashboard'  },
   ];
 
   get xpPercent() { return (this.xp / this.xpMax) * 100; }

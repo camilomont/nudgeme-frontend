@@ -9,14 +9,14 @@
   <!-- Nav items -->
   <nav class="flex-1 mt-6 flex flex-col" style="gap:6px">
     @for (item of navItems; track item.label) {
-      <button class="nav-item" [class.nav-item--active]="item.active">
+      <a class="nav-item" [routerLink]="item.route" routerLinkActive="nav-item--active" [routerLinkActiveOptions]="{exact: true}">
         <lucide-icon
           [img]="item.icon"
           [size]="19"
-          [color]="item.active ? '#00B87C' : '#8A94A6'">
+          [color]="undefined">
         </lucide-icon>
-        <span class="text-sm" [class.font-bold]="item.active" [class.font-medium]="!item.active">{{ item.label }}</span>
-      </button>
+        <span class="text-sm">{{ item.label }}</span>
+      </a>
     }
   </nav>
 

@@ -6,8 +6,10 @@ import {
   OnInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { ApiService } from '@core/services/api.service';
+import { Task } from '@shared/models/task.model';
 import { FloatingParticlesComponent } from '@shared/components/floating-particles/floating-particles.component';
 import { DbSidebarComponent } from './components/db-sidebar/db-sidebar.component';
 import { DbTopbarComponent } from './components/db-topbar/db-topbar.component';
@@ -18,22 +20,13 @@ import { DbAiSuggestionComponent } from './components/db-ai-suggestion/db-ai-sug
 import { DbStatsComponent } from './components/db-stats/db-stats.component';
 import { DbFocusStreakComponent } from './components/db-focus-streak/db-focus-streak.component';
 
-export interface Task {
-  _id: string;
-  title: string;
-  type: string;
-  status: string;
-  priority: string;
-  category?: string;
-  aiGenerated: boolean;
-  estimatedMinutes?: number;
-}
-
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
+    RouterLinkActive,
     FloatingParticlesComponent,
     DbSidebarComponent,
     DbTopbarComponent,

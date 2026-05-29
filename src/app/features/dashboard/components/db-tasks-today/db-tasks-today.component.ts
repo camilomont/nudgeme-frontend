@@ -1,7 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { LucideAngularModule, Zap, Pencil, User, LucideIconData } from 'lucide-angular';
-import { Task } from '../../dashboard.component';
+import { Task } from '@shared/models/task.model';
 
 const CARD_PALETTES = [
   {
@@ -51,7 +52,7 @@ const PRIORITY_ICON: Record<string, LucideIconData> = {
 @Component({
   selector: 'db-tasks-today',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, RouterLink],
   templateUrl: './db-tasks-today.component.html',
   styleUrl: './db-tasks-today.component.scss',
 })

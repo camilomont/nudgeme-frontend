@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/api/v1/(.*)", "destination": "https://nudgeme-backend.onrender.com/api/v1/$1" }
+  ]
+}

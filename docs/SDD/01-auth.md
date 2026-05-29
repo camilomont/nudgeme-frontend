@@ -11,7 +11,8 @@ Módulo encargado del flujo de autenticación mediante Google OAuth2. Maneja el 
   - **Izquierdo (58%):** Video de fondo animado + hero copy + stat cards decorativas
   - **Derecho:** Formulario neumórfico con botón "Continuar con Google"
 - **Animaciones:** anime.js timeline con entrada escalonada de elementos
-- **Flujo:** Usuario hace clic → `AuthService.loginWithGoogle()` → redirección a backend `/auth/google`
+- **Estado:** `isLoggingIn` signal — se activa al hacer clic, deshabilita el botón y muestra spinner + "Redirigiendo..."
+- **Flujo:** Usuario hace clic → `isLoggingIn.set(true)` → animación de botón → setTimeout(200ms) → `AuthService.loginWithGoogle()` → redirección a backend `/auth/google`
 
 ### AuthService (`core/services/auth.service.ts`)
 - **Propósito:** Maneja el estado de autenticación vía Signals
@@ -20,9 +21,13 @@ Módulo encargado del flujo de autenticación mediante Google OAuth2. Maneja el 
   - `isAuthenticated: Signal<boolean>` — computed basado en `user`
   - `isLoading: Signal<boolean>` — indica si se está cargando el perfil
 - **Métodos:**
-  - `loadProfile()` — llama `GET /auth/me`, actualiza `user` signal, retorna Observable
-  - `loginWithGoogle()` — redirige a `GET /auth/google`
-  - `logout()` — llama `GET /auth/logout`, limpia signal, redirige a `/login`
+  - `loadProfile()` — llama `GET /auth/me`, actualiza `user` signal, retorna Observable.
+    - Usa `share()` para cachear la petición: si se llama múltiples veces simultáneamente, solo hace 1 HTTP request.
+    - En error: limpia `user` a `null` y relanza el error.
+    - En finalización: resetea `isLoading` y `profileRequest$`.
+  - `loginWithGoogle()` — redirige a `GET /auth/google` (extraído a `redirectTo()` privado para testear sin modificar `window.location`)
+  - `logout()` — llama `GET /auth/logout`, limpia signal, redirige a `/login`.
+    - También limpia sesión si el request falla (`catchError` con `EMPTY`)
 
 ## 3. Guards
 
@@ -45,11 +50,11 @@ Módulo encargado del flujo de autenticación mediante Google OAuth2. Maneja el 
 - Agrega `withCredentials: true` a todas las peticiones HTTP para enviar cookies
 
 ### errorInterceptor (`core/interceptors/error.interceptor.ts`)
-- Intercepta errores HTTP y muestra mensajes amigables en consola:
-  - `0` → "No se pudo conectar con el servidor"
-  - `401` → "Sesión expirada. Inicia sesión nuevamente"
-  - `404` → "Recurso no encontrado"
-  - `500+` → "Error del servidor. Intenta más tarde"
+- Intercepta errores HTTP y muestra mensajes amigables via **ToastService**:
+  - `401` + no está en `/login` → limpia `user`, redirige a `/login`
+  - `401` + ya está en `/login` → no hace nada (evita bucle de redirección)
+  - `0` (error de red) → toast "No se pudo conectar con el servidor"
+  - Otros status → toast con `err.error.message` del backend, o "Ocurrió un error inesperado" si no hay mensaje
 
 ## 5. Flujo de Autenticación Completo
 
@@ -107,7 +112,23 @@ interface UserProfile {
 | `/dashboard` | `authGuard`, `onboardingGuard` | `/login` o `/onboarding` |
 | `/tasks` | `authGuard`, `onboardingGuard` | `/login` o `/onboarding` |
 
-## 8. Dependencias
+## 8. Toast System
+
+### ToastService (`shared/services/toast.service.ts`)
+- **Estado:** `toasts: Signal<Toast[]>` — cola de notificaciones
+- **Métodos:**
+  - `show(message, type, duration)` — agrega un toast con `crypto.randomUUID()`, auto-dismiss con `setTimeout`
+  - `dismiss(id)` — remueve el toast por ID
+- **Tipos:** `'success' | 'error' | 'warning' | 'info'`
+- **Duration:** 4000ms default. Si `duration = 0`, no se descarta automáticamente
+
+### ToastContainerComponent (`shared/components/toast-container/`)
+- Componente standalone que se coloca en `AppComponent`
+- Renderiza `toastService.toasts()` iterando con `@for`
+- Cada toast muestra icono (Lucide según tipo), mensaje y botón de cerrar
+- Clases CSS: `.toast-success`, `.toast-error`, `.toast-warning`, `.toast-info`
+
+## 9. Dependencias
 - `@angular/router` — lazy loading + guards
 - `@angular/common/http` — HttpClient + interceptors
 - `@env/environment` — apiUrl

@@ -1,6 +1,7 @@
 import {
   Component,
   inject,
+  signal,
   AfterViewInit,
   OnDestroy,
   ElementRef,
@@ -54,6 +55,8 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
 
   readonly CheckCircle2 = CheckCircle2;
   readonly Flame = Flame;
+
+  readonly isLoggingIn = signal(false);
 
   readonly features = [
     { iconName: 'brain',       label: 'Sugerencias IA basadas en tus intereses' },
@@ -203,6 +206,7 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
   }
 
   login() {
+    this.isLoggingIn.set(true);
     if (this.googleBtn?.nativeElement) {
       anime({
         targets: this.googleBtn.nativeElement,

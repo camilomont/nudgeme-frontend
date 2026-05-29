@@ -39,37 +39,37 @@
 
   <!-- Mobile bottom navigation -->
   <nav class="db-mobile-nav">
-    <button class="db-mobile-nav-item db-mobile-nav-item--active">
+    <a class="db-mobile-nav-item" routerLink="/dashboard" routerLinkActive="db-mobile-nav-item--active" [routerLinkActiveOptions]="{exact: true}">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
         <polyline stroke-linecap="round" stroke-linejoin="round" points="9 22 9 12 15 12 15 22"/>
       </svg>
       <span class="text-[10px] font-semibold">Inicio</span>
-    </button>
-    <button class="db-mobile-nav-item">
+    </a>
+    <a class="db-mobile-nav-item" routerLink="/tasks" routerLinkActive="db-mobile-nav-item--active" [routerLinkActiveOptions]="{exact: true}">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/>
       </svg>
       <span class="text-[10px] font-medium">Tareas</span>
-    </button>
-    <button class="db-mobile-nav-item">
+    </a>
+    <a class="db-mobile-nav-item" routerLink="/dashboard" routerLinkActive="db-mobile-nav-item--active">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M13 2 4.09 12.96A.5.5 0 004.5 14H11l-1 8 8.91-10.96A.5.5 0 0018.5 10H12l1-8z"/>
       </svg>
       <span class="text-[10px] font-medium">Energía</span>
-    </button>
-    <button class="db-mobile-nav-item">
+    </a>
+    <a class="db-mobile-nav-item" routerLink="/dashboard" routerLinkActive="db-mobile-nav-item--active">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18M7 16l4-4 4 4 4-4"/>
       </svg>
       <span class="text-[10px] font-medium">Stats</span>
-    </button>
-    <button class="db-mobile-nav-item">
+    </a>
+    <a class="db-mobile-nav-item" routerLink="/dashboard" routerLinkActive="db-mobile-nav-item--active">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 2l1.5 4.5H18l-3.75 2.73 1.5 4.5L12 11.26 8.25 13.73l1.5-4.5L6 6.5h4.5z"/>
       </svg>
       <span class="text-[10px] font-medium">IA</span>
-    </button>
+    </a>
   </nav>
 
 </div>

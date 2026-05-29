@@ -7,6 +7,7 @@
 ![Angular](https://img.shields.io/badge/Angular-19-DD0031)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-06B6D4)
+![Tests](https://img.shields.io/badge/tests-38%20passing-brightgreen)
 
 Aplicacion web **NudgeMe** — un asistente de productividad personal con inteligencia artificial. Construido con Angular 19, TailwindCSS y Signals.
 
@@ -20,7 +21,7 @@ Aplicacion web **NudgeMe** — un asistente de productividad personal con inteli
 | AnimeJS | ^3.2 | Animaciones |
 | Lucide Angular | ^1.0 | Iconos |
 | RxJS | ~7.8 | Programacion reactiva |
-| Karma + Jasmine | 6.4 / 5.4 | Testing |
+| Karma + Jasmine | 6.4 / 5.4 | Testing (38 tests) |
 
 ## Requisitos
 
@@ -50,8 +51,27 @@ La app corre en `http://localhost:4200` y se conecta al backend en `http://local
 npm start        # Desarrollo con hot-reload (http://localhost:4200)
 npm run build    # Compilar para produccion
 npm run watch    # Desarrollo con watch
-npm test         # Tests unitarios (Jasmine + Karma)
+npm test         # Tests unitarios (38 tests, Jasmine + Karma)
 npm run lint     # ESLint
+```
+
+> **Nota:** En Windows sin Chrome, ejecutar tests con:
+> ```powershell
+> $env:CHROME_BIN = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+> npm test -- --watch=false --browsers=ChromeHeadless
+> ```
+
+## Testing
+
+El proyecto usa **Jasmine + Karma**. Los tests están junto al código fuente (`*.spec.ts`).
+
+```bash
+npm test              # Todos los tests (38 tests, ChromeHeadless)
+```
+
+Para ver cobertura:
+```bash
+npm test -- --code-coverage --watch=false --browsers=ChromeHeadless
 ```
 
 ## Rutas

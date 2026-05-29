@@ -8,22 +8,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '@core/services/api.service';
 import { AnimeEntranceDirective } from '@shared/directives/anime-entrance.directive';
-
-type TaskType = 'daily' | 'weekly' | 'monthly';
-type TaskStatus = 'pending' | 'in_progress' | 'completed';
-type TaskPriority = 'low' | 'medium' | 'high';
-
-interface Task {
-  _id: string;
-  title: string;
-  description?: string;
-  type: TaskType;
-  status: TaskStatus;
-  priority: TaskPriority;
-  category?: string;
-  aiGenerated: boolean;
-  dueDate?: string;
-}
+import { Task, TaskPriority, TaskType } from '@shared/models/task.model';
 
 const PRIORITY_COLORS: Record<TaskPriority, string> = {
   low:    'bg-mint-200/20 text-mint-200',

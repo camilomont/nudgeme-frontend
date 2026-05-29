@@ -1,7 +1,8 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { tap, catchError, EMPTY, throwError, map } from 'rxjs';
+import { Observable, EMPTY, throwError } from 'rxjs';
+import { tap, catchError, map, share, finalize } from 'rxjs/operators';
 import { environment } from '@env/environment';
 
 export interface UserProfile {
@@ -29,38 +30,53 @@ export class AuthService {
   readonly isAuthenticated = computed(() => this.user() !== null);
   readonly isLoading = signal(false);
 
-  loadProfile() {
+  private profileRequest$: Observable<UserProfile> | null = null;
+
+  loadProfile(): Observable<UserProfile> {
+    if (this.profileRequest$) return this.profileRequest$;
+
     this.isLoading.set(true);
-    return this.http
-      // TransformInterceptor wraps all responses in { data, statusCode, timestamp }
+    this.profileRequest$ = this.http
       .get<{ data: UserProfile }>(`${environment.apiUrl}/auth/me`)
       .pipe(
         map((res) => res.data),
-        tap((profile) => {
-          this.user.set(profile);
-          this.isLoading.set(false);
-        }),
+        tap((profile) => this.user.set(profile)),
         catchError((err) => {
           this.user.set(null);
-          this.isLoading.set(false);
           return throwError(() => err);
         }),
+        finalize(() => {
+          this.isLoading.set(false);
+          this.profileRequest$ = null;
+        }),
+        share(),
       );
+
+    return this.profileRequest$;
   }
 
   loginWithGoogle() {
-    window.location.href = `${environment.apiUrl}/auth/google`;
+    this.redirectTo(`${environment.apiUrl}/auth/google`);
+  }
+
+  private redirectTo(url: string) {
+    window.location.href = url;
   }
 
   logout() {
+    const clearSession = () => {
+      this.user.set(null);
+      this.router.navigate(['/login']);
+    };
+
     this.http
       .get(`${environment.apiUrl}/auth/logout`)
       .pipe(
-        tap(() => {
-          this.user.set(null);
-          this.router.navigate(['/login']);
+        tap(clearSession),
+        catchError(() => {
+          clearSession();
+          return EMPTY;
         }),
-        catchError(() => EMPTY),
       )
       .subscribe();
   }
